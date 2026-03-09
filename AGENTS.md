@@ -41,6 +41,9 @@ There is no test framework configured yet. For now, treat `pnpm build` as the mi
 
 The current history uses short, imperative commit messages, for example: `Initial scaffold`. Continue that pattern.
 
+When Codex contributes code or docs, include a co-author trailer on the commit:
+`Co-authored-by: Codex <codex@openai.com>`.
+
 PRs should include:
 
 - a brief summary of the change
