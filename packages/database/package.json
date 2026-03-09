@@ -1,0 +1,17 @@
+{
+  "name": "@pulsebook/database",
+  "private": true,
+  "scripts": {
+    "prisma": "prisma",
+    "generate": "prisma generate",
+    "migrate:dev": "prisma migrate dev",
+    "studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.4.1"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.7",
+    "prisma": "^6.4.1"
+  }
+}

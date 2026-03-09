@@ -1,0 +1,13 @@
+{
+  "name": "pulsebook",
+  "private": true,
+  "packageManager": "pnpm@10.6.5",
+  "scripts": {
+    "dev:web": "pnpm --filter @pulsebook/web dev",
+    "dev:api": "pnpm --filter @pulsebook/api dev",
+    "build": "pnpm -r build",
+    "db:generate": "pnpm --filter @pulsebook/database prisma generate",
+    "db:migrate:dev": "pnpm --filter @pulsebook/database prisma migrate dev",
+    "db:studio": "pnpm --filter @pulsebook/database prisma studio"
+  }
+}
