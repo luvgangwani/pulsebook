@@ -49,6 +49,7 @@ If any of those details are not specified, ask clarifing questions to complete t
 | Field                   | Type     | Nullable | Unique | References    |
 | ----------------------- | -------- | -------- | ------ | ------------- |
 | id                      | string   | no       | yes    | -             |
+| user_id                 | string   | no       | yes    | user.id       |
 | address_line_1          | string   | yes      | no     | -             |
 | address_line_2          | string   | yes      | no     | -             |
 | suburb                  | string   | yes      | no     | -             |
@@ -63,6 +64,7 @@ If any of those details are not specified, ask clarifing questions to complete t
 | Field         | Type     | Nullable | Unique | References    |
 | ------------- | -------- | -------- | ------ | ------------- |
 | id            | string   | no       | yes    | -             |
+| user_id       | string   | no       | yes    | user.id       |
 | speciality_id | string   | no       | no     | speciality.id |
 | created_at    | datetime | no       | no     | -             |
 | updated_at    | datetime | no       | no     | -             |
@@ -135,7 +137,7 @@ Generated slots should be attributable to the `hcp_schedule` record and `clinic_
 | Field      | Type               | Nullable | Unique | References |
 | ---------- | ------------------ | -------- | ------ | ---------- |
 | id         | string             | no       | yes    | -          |
-| slot_id    | string             | no       | no     | slot.id    |
+| slot_id    | string             | no       | yes    | slot.id    |
 | hcp_id     | string             | no       | no     | hcp.id     |
 | patient_id | string             | no       | no     | patient.id |
 | status     | appointment_status | no       | no     | -          |
@@ -143,7 +145,6 @@ Generated slots should be attributable to the `hcp_schedule` record and `clinic_
 | updated_at | datetime           | no       | no     | -          |
 
 `appointment_status` is limited to `PENDING`, `ACCEPTED`, and `REJECTED`.
-`slot_id` should map to only one appointment at a time.
 
 ## Speciality
 
