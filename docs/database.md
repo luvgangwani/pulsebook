@@ -127,7 +127,8 @@ There should be one active schedule record per HCP-clinic combination.
 | updated_at         | datetime    | no       | no     | -                  |
 
 Slots are generated from the clinic-specific HCP schedule's configured availability and slot duration.
-Slot rows are created on the HCP's first login, only for days included in `hcp_schedule.available_days`.
+Slot rows are created on the HCP's first login for that day, only for days included in `hcp_schedule.available_days`.
+If a schedule is updated during the day, all unappointed slots should be deleted and then re-created, or not re-created, based on the updated schedule.
 For example, a 10-hour clinic day from `8:00` to `18:00` with a `15` minute duration yields entries such as `8:00`, `8:15`, and so on.
 Generated slots should be attributable to the `hcp_schedule` record and `clinic_location` that created them.
 `(hcp_id, slot_date, slot_time)` should be unique to avoid duplicate HCP slots.
