@@ -2,7 +2,7 @@
 
 ## Entities
 
-This is a list of all entities defined in the application
+This is a list of all proposed entities to be defined in the application
 
 All entities should include the common base fields `id`, `created_at`, and `updated_at`.
 Each entity added to this document should define every field's type, nullability, uniqueness, and references.
