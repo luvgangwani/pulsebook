@@ -119,7 +119,6 @@ If an HCP is scheduled on any day listed in `available_days`, they are assumed t
 | --------------- | ----------- | -------- | ------ | --------------- |
 | id              | string      | no       | yes    | -               |
 | slot_date       | date        | no       | no     | -               |
-| slot_day        | day_of_week | no       | no     | -               |
 | slot_time       | time        | no       | no     | -               |
 | hcp_schedule_id | string      | no       | no     | hcp_schedule.id |
 | created_at      | datetime    | no       | no     | -               |
@@ -137,14 +136,14 @@ Generated slots should be attributable to the `hcp_schedule` record that created
 | Field      | Type               | Nullable | Unique | References |
 | ---------- | ------------------ | -------- | ------ | ---------- |
 | id         | string             | no       | yes    | -          |
-| slot_id    | string             | no       | yes    | slot.id    |
-| hcp_id     | string             | no       | no     | hcp.id     |
+| slot_id    | string             | no       | no     | slot.id    |
 | patient_id | string             | no       | no     | patient.id |
 | status     | appointment_status | no       | no     | -          |
 | created_at | datetime           | no       | no     | -          |
 | updated_at | datetime           | no       | no     | -          |
 
 `appointment_status` is limited to `PENDING`, `ACCEPTED`, and `REJECTED`.
+`(slot_id, patient_id, status)` should be unique.
 
 ## Speciality
 
