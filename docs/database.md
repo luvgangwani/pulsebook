@@ -23,24 +23,24 @@ If any of those details are not specified, ask clarifing questions to complete t
 
 ## User
 
-| Field          | Type     | Nullable | Unique | References |
-| -------------- | -------- | -------- | ------ | ---------- |
-| id             | string   | no       | yes    | -          |
-| first_name     | string   | no       | no     | -          |
-| last_name      | string   | yes      | no     | -          |
-| email          | string   | no       | yes    | -          |
-| contact_number | string   | yes      | no     | -          |
-| password       | string   | no       | no     | -          |
-| role_id        | string   | no       | no     | role.id    |
-| created_at     | datetime | no       | no     | -          |
-| updated_at     | datetime | no       | no     | -          |
+| Field          | Type          | Nullable | Unique | References |
+| -------------- | ------------- | -------- | ------ | ---------- |
+| id             | string        | no       | yes    | -          |
+| first_name     | string        | no       | no     | -          |
+| last_name      | string        | yes      | no     | -          |
+| email          | string        | no       | yes    | -          |
+| contact_number | string        | yes      | no     | -          |
+| password       | hashed string | no       | no     | -          |
+| role_id        | string        | no       | no     | role.id    |
+| created_at     | datetime      | no       | no     | -          |
+| updated_at     | datetime      | no       | no     | -          |
 
 ## Role
 
 | Field      | Type     | Nullable | Unique | References |
 | ---------- | -------- | -------- | ------ | ---------- |
 | id         | string   | no       | yes    | -          |
-| name       | string   | no       | no     | -          |
+| name       | string   | no       | yes    | -          |
 | created_at | datetime | no       | no     | -          |
 | updated_at | datetime | no       | no     | -          |
 
@@ -115,14 +115,14 @@ If an HCP is scheduled on any day listed in `available_days`, they are assumed t
 
 ## Slot
 
-| Field           | Type        | Nullable | Unique | References      |
-| --------------- | ----------- | -------- | ------ | --------------- |
-| id              | string      | no       | yes    | -               |
-| slot_date       | date        | no       | no     | -               |
-| slot_time       | time        | no       | no     | -               |
-| hcp_schedule_id | string      | no       | no     | hcp_schedule.id |
-| created_at      | datetime    | no       | no     | -               |
-| updated_at      | datetime    | no       | no     | -               |
+| Field           | Type     | Nullable | Unique | References      |
+| --------------- | -------- | -------- | ------ | --------------- |
+| id              | string   | no       | yes    | -               |
+| slot_date       | date     | no       | no     | -               |
+| slot_time       | time     | no       | no     | -               |
+| hcp_schedule_id | string   | no       | no     | hcp_schedule.id |
+| created_at      | datetime | no       | no     | -               |
+| updated_at      | datetime | no       | no     | -               |
 
 Slots are generated from the clinic-specific HCP schedule's configured availability and slot duration.
 Slot rows are created on the HCP's first login for that day, only for days included in `hcp_schedule.available_days`.
