@@ -111,27 +111,26 @@ If any of those details are not specified, ask clarifing questions to complete t
 `slot_duration` is stored in minutes and defaults to `15`.
 `schedule_expiry_at` should be set to `updated_at + 1 year` so HCPs can review schedule changes annually.
 There should be one active schedule record per HCP-clinic combination.
+If an HCP is scheduled on any day listed in `available_days`, they are assumed to be available from `8:00` to `18:00`, except for a fixed break from `12:30` to `14:30`.
 
 ## Slot
 
-| Field              | Type        | Nullable | Unique | References         |
-| ------------------ | ----------- | -------- | ------ | ------------------ |
-| id                 | string      | no       | yes    | -                  |
-| slot_date          | date        | no       | no     | -                  |
-| slot_day           | day_of_week | no       | no     | -                  |
-| slot_time          | time        | no       | no     | -                  |
-| hcp_id             | string      | no       | no     | hcp.id             |
-| clinic_location_id | string      | no       | no     | clinic_location.id |
-| hcp_schedule_id    | string      | no       | no     | hcp_schedule.id    |
-| created_at         | datetime    | no       | no     | -                  |
-| updated_at         | datetime    | no       | no     | -                  |
+| Field           | Type        | Nullable | Unique | References      |
+| --------------- | ----------- | -------- | ------ | --------------- |
+| id              | string      | no       | yes    | -               |
+| slot_date       | date        | no       | no     | -               |
+| slot_day        | day_of_week | no       | no     | -               |
+| slot_time       | time        | no       | no     | -               |
+| hcp_schedule_id | string      | no       | no     | hcp_schedule.id |
+| created_at      | datetime    | no       | no     | -               |
+| updated_at      | datetime    | no       | no     | -               |
 
 Slots are generated from the clinic-specific HCP schedule's configured availability and slot duration.
 Slot rows are created on the HCP's first login for that day, only for days included in `hcp_schedule.available_days`.
 If a schedule is updated during the day, all unappointed slots should be deleted and then re-created, or not re-created, based on the updated schedule.
-For example, a 10-hour clinic day from `8:00` to `18:00` with a `15` minute duration yields entries such as `8:00`, `8:15`, and so on.
-Generated slots should be attributable to the `hcp_schedule` record and `clinic_location` that created them.
-`(hcp_id, slot_date, slot_time)` should be unique to avoid duplicate HCP slots.
+For example, a scheduled day from `8:00` to `18:00`, excluding the break from `12:30` to `14:30`, with a `15` minute duration yields entries such as `8:00`, `8:15`, and so on.
+Generated slots should be attributable to the `hcp_schedule` record that created them.
+`(hcp_schedule_id, slot_date, slot_time)` should be unique to avoid duplicate HCP slots.
 
 ## Appointment
 
