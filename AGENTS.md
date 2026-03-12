@@ -1,5 +1,23 @@
 # Repository Guidelines
 
+## Project Overview
+
+Puslebook is a self-serve appointment tracking app for patients and healthcare professionals.
+
+### Terminology
+
+Users - Any user with an account on the application
+Role - A user can be one of patient/healthcare professional (hcp)
+Patient - The user who makes an application for an appointment
+HCP - The user who receives and takes action on the application for appointment
+Slot - A default 15 minute timeslot within the schedule (day/days in a week) specified by the HCP
+Appointment - The actual action where a patient books a timeslot with an HCP
+
+For more information refer the below table:
+
+| Database | docs/database.md |
+| -------- | ---------------- |
+
 ## Project Structure & Module Organization
 
 `pulsebook` is a `pnpm` monorepo. Application code lives in `apps/`:
@@ -30,6 +48,8 @@ Use TypeScript everywhere. Follow the existing style:
 - double quotes in TS/TSX files
 - `PascalCase` for Nest modules and React components
 - `kebab-case` for feature folders such as `src/health/`
+- If there are any new values that are being used across the `/api` or `/web` apps put them in a `constants.ts` file within the respective directory
+- If there are any mappings/configurations that are being used across the `/api` or `/web` apps put them in a `config.ts` within the respective directory
 
 Prefer small modules with explicit exports. Keep Next route files inside `src/app` and Nest controllers/services close to their feature module.
 
@@ -54,3 +74,7 @@ PRs should include:
 ## Security & Configuration Tips
 
 Do not commit real secrets. Copy from `.env.example` files in `apps/api`, `apps/web`, and `packages/database` when setting up local development.
+
+## Documentation
+
+- If a new database entity is introduced or updated, make the required updates to `docs/database.md`
