@@ -24,13 +24,41 @@ Basic monorepo scaffold with:
 
    Prisma reads `packages/database/.env` through `packages/database/prisma.config.ts`.
 
-3. Generate the Prisma client:
+3. Start Postgres locally and create the development database.
+
+   Connection format:
+
+   ```bash
+   postgresql://<username>:<password>@localhost:5432/pulsebook?schema=public
+   ```
+
+   Example setup flow:
+
+   ```bash
+   psql postgres
+   ```
+
+   Then in `psql`:
+
+   ```sql
+   CREATE ROLE <username> WITH LOGIN PASSWORD '<password>';
+   ALTER ROLE <username> CREATEDB;
+   CREATE DATABASE pulsebook OWNER <username>;
+   ```
+
+4. Apply the database schema locally:
+
+   ```bash
+   pnpm db:migrate:dev
+   ```
+
+5. Generate the Prisma client:
 
    ```bash
    pnpm db:generate
    ```
 
-4. Run the frontend and API in separate terminals:
+6. Run the frontend and API in separate terminals:
 
    ```bash
    pnpm dev:web
