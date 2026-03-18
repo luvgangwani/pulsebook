@@ -147,7 +147,7 @@ model Slot {
 
 model Appointment {
   id         String            @id @default(cuid())
-  slotId     String            @map("slot_id")
+  slotId     String            @unique @map("slot_id")
   patientId  String            @map("patient_id")
   status     AppointmentStatus
   createdAt  DateTime          @default(now()) @map("created_at")
@@ -156,7 +156,6 @@ model Appointment {
   slot      Slot    @relation(fields: [slotId], references: [id])
   patient   Patient @relation(fields: [patientId], references: [id])
 
-  @@unique([slotId, patientId, status])
   @@map("appointment")
 }
 

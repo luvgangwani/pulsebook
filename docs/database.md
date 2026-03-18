@@ -135,14 +135,14 @@ Generated slots should be attributable to the `hcp_schedule` record that created
 | Field      | Type               | Nullable | Unique | References |
 | ---------- | ------------------ | -------- | ------ | ---------- |
 | id         | string             | no       | yes    | -          |
-| slot_id    | string             | no       | no     | slot.id    |
+| slot_id    | string             | no       | yes    | slot.id    |
 | patient_id | string             | no       | no     | patient.id |
 | status     | appointment_status | no       | no     | -          |
 | created_at | datetime           | no       | no     | -          |
 | updated_at | datetime           | no       | no     | -          |
 
 `appointment_status` is limited to `PENDING`, `ACCEPTED`, and `REJECTED`.
-`(slot_id, patient_id, status)` should be unique.
+`status` represents the lifecycle of the single appointment row attached to a slot.
 
 ## Speciality
 
