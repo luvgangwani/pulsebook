@@ -128,21 +128,23 @@ If a schedule is updated during the day, all unappointed slots should be deleted
 For example, a scheduled day from `8:00` to `18:00`, excluding the break from `12:30` to `14:30`, with a `15` minute duration yields entries such as `8:00`, `8:15`, and so on.
 Generated slots should be attributable to the `hcp_schedule` record that created them.
 `(hcp_schedule_id, slot_date, slot_time)` should be unique to avoid duplicate HCP slots.
-Each slot can have at most one appointment row attached to it.
+Each slot can have multiple historical appointment rows attached to it, but only one active appointment request at a time.
 
 ## Appointment
 
 | Field      | Type               | Nullable | Unique | References |
 | ---------- | ------------------ | -------- | ------ | ---------- |
 | id         | string             | no       | yes    | -          |
-| slot_id    | string             | no       | yes    | slot.id    |
+| slot_id    | string             | no       | no     | slot.id    |
 | patient_id | string             | no       | no     | patient.id |
 | status     | appointment_status | no       | no     | -          |
 | created_at | datetime           | no       | no     | -          |
 | updated_at | datetime           | no       | no     | -          |
 
 `appointment_status` is limited to `PENDING`, `ACCEPTED`, and `REJECTED`.
-`status` represents the lifecycle of the single appointment row attached to a slot.
+`status` represents the lifecycle of an appointment request for a slot.
+Only one active appointment request per slot should be allowed at a time.
+`PENDING` and `ACCEPTED` are active statuses. `REJECTED` is historical and should not block the slot from being requested again.
 
 ## Speciality
 

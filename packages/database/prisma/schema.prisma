@@ -137,8 +137,8 @@ model Slot {
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
-  hcpSchedule HcpSchedule  @relation(fields: [hcpScheduleId], references: [id])
-  appointment Appointment?
+  hcpSchedule  HcpSchedule   @relation(fields: [hcpScheduleId], references: [id])
+  appointments Appointment[]
 
   @@unique([hcpScheduleId, slotDate, slotTime])
   @@map("slot")
@@ -146,7 +146,7 @@ model Slot {
 
 model Appointment {
   id         String            @id @default(cuid())
-  slotId     String            @unique @map("slot_id")
+  slotId     String            @map("slot_id")
   patientId  String            @map("patient_id")
   status     AppointmentStatus
   createdAt  DateTime          @default(now()) @map("created_at")
