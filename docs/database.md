@@ -128,6 +128,7 @@ If a schedule is updated during the day, all unappointed slots should be deleted
 For example, a scheduled day from `8:00` to `18:00`, excluding the break from `12:30` to `14:30`, with a `15` minute duration yields entries such as `8:00`, `8:15`, and so on.
 Generated slots should be attributable to the `hcp_schedule` record that created them.
 `(hcp_schedule_id, slot_date, slot_time)` should be unique to avoid duplicate HCP slots.
+Each slot can have at most one appointment row attached to it.
 
 ## Appointment
 

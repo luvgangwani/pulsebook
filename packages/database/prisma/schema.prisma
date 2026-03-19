@@ -137,8 +137,8 @@ model Slot {
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
-  hcpSchedule  HcpSchedule   @relation(fields: [hcpScheduleId], references: [id])
-  appointments Appointment[]
+  hcpSchedule HcpSchedule  @relation(fields: [hcpScheduleId], references: [id])
+  appointment Appointment?
 
   @@unique([hcpScheduleId, slotDate, slotTime])
   @@map("slot")
