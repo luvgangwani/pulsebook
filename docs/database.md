@@ -102,13 +102,12 @@ If any of those details are not specified, ask clarifing questions to complete t
 | hcp_clinic_location_id | string        | no       | yes    | hcp_clinic_location.id  |
 | available_days         | day_of_week[] | no       | no     | -                       |
 | slot_duration          | integer       | no       | no     | -                       |
-| schedule_expiry_at     | datetime      | no       | no     | -                       |
 | created_at             | datetime      | no       | no     | -                       |
 | updated_at             | datetime      | no       | no     | -                       |
 
 `available_days` is limited to `Sunday` through `Saturday`, with the week starting on `Sunday` and ending on `Saturday`.
 `slot_duration` is stored in minutes and defaults to `15`.
-`schedule_expiry_at` should be set to `updated_at + 1 year` so HCPs can review schedule changes annually.
+The annual review date for a schedule should be derived as `updated_at + 1 year`.
 There should be one active schedule record per `hcp_clinic_location_id`.
 If an HCP is scheduled on any day listed in `available_days`, they are assumed to be available from `8:00` to `18:00`, except for a fixed break from `12:30` to `14:30`.
 

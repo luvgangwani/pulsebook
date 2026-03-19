@@ -120,7 +120,6 @@ model HcpSchedule {
   hcpClinicLocationId String      @unique @map("hcp_clinic_location_id")
   availableDays       DayOfWeek[] @map("available_days")
   slotDuration        Int         @map("slot_duration")
-  scheduleExpiryAt    DateTime    @map("schedule_expiry_at")
   createdAt           DateTime    @default(now()) @map("created_at")
   updatedAt           DateTime    @updatedAt @map("updated_at")
 
