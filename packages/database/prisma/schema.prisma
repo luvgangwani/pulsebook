@@ -7,10 +7,165 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum DayOfWeek {
+  SUNDAY
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+}
+
+enum AppointmentStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
 model User {
+  id            String   @id @default(cuid())
+  firstName     String   @map("first_name")
+  lastName      String?  @map("last_name")
+  email         String   @unique
+  contactNumber String?  @map("contact_number")
+  password      String
+  roleId        String   @map("role_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  role    Role    @relation(fields: [roleId], references: [id])
+  patient Patient?
+  hcp     Hcp?
+
+  @@map("user")
+}
+
+model Role {
   id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  users User[]
+
+  @@map("role")
+}
+
+model Patient {
+  id                    String   @id @default(cuid())
+  userId                String   @unique @map("user_id")
+  addressLine1          String?  @map("address_line_1")
+  addressLine2          String?  @map("address_line_2")
+  suburb                String?
+  state                 String?
+  postcode              String
+  preferredSpecialityId String?  @map("preferred_speciality_id")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  user               User         @relation(fields: [userId], references: [id])
+  preferredSpeciality Speciality? @relation("PatientPreferredSpeciality", fields: [preferredSpecialityId], references: [id])
+  appointments       Appointment[]
+
+  @@map("patient")
+}
+
+model Hcp {
+  id            String   @id @default(cuid())
+  userId        String   @unique @map("user_id")
+  specialityId  String   @map("speciality_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  user                User                 @relation(fields: [userId], references: [id])
+  speciality          Speciality           @relation(fields: [specialityId], references: [id])
+  clinicLocations     HcpClinicLocation[]
+
+  @@map("hcp")
+}
+
+model ClinicLocation {
+  id           String   @id @default(cuid())
+  addressLine1 String?  @map("address_line_1")
+  addressLine2 String?  @map("address_line_2")
+  suburb       String?
+  state        String?
+  postcode     String
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  hcpLinks   HcpClinicLocation[]
+
+  @@map("clinic_location")
+}
+
+model HcpClinicLocation {
+  id               String   @id @default(cuid())
+  hcpId            String   @map("hcp_id")
+  clinicLocationId String   @map("clinic_location_id")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  hcp             Hcp            @relation(fields: [hcpId], references: [id])
+  clinicLocation  ClinicLocation @relation(fields: [clinicLocationId], references: [id])
+  schedule        HcpSchedule?
+
+  @@unique([hcpId, clinicLocationId])
+  @@map("hcp_clinic_location")
+}
+
+model HcpSchedule {
+  id                  String      @id @default(cuid())
+  hcpClinicLocationId String      @unique @map("hcp_clinic_location_id")
+  availableDays       DayOfWeek[] @map("available_days")
+  slotDuration        Int         @map("slot_duration")
+  createdAt           DateTime    @default(now()) @map("created_at")
+  updatedAt           DateTime    @updatedAt @map("updated_at")
+
+  hcpClinicLocation HcpClinicLocation @relation(fields: [hcpClinicLocationId], references: [id])
+  slots             Slot[]
+
+  @@map("hcp_schedule")
+}
+
+model Slot {
+  id            String   @id @default(cuid())
+  slotDate      DateTime @db.Date @map("slot_date")
+  slotTime      DateTime @db.Time(0) @map("slot_time")
+  hcpScheduleId String   @map("hcp_schedule_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  hcpSchedule  HcpSchedule   @relation(fields: [hcpScheduleId], references: [id])
+  appointments Appointment[]
+
+  @@unique([hcpScheduleId, slotDate, slotTime])
+  @@map("slot")
+}
+
+model Appointment {
+  id         String            @id @default(cuid())
+  slotId     String            @map("slot_id")
+  patientId  String            @map("patient_id")
+  status     AppointmentStatus
+  createdAt  DateTime          @default(now()) @map("created_at")
+  updatedAt  DateTime          @updatedAt @map("updated_at")
+
+  slot      Slot    @relation(fields: [slotId], references: [id])
+  patient   Patient @relation(fields: [patientId], references: [id])
+
+  @@map("appointment")
+}
+
+model Speciality {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  patients Patient[]    @relation("PatientPreferredSpeciality")
+  hcps     Hcp[]
+
+  @@map("speciality")
 }

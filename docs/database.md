@@ -96,21 +96,19 @@ If any of those details are not specified, ask clarifing questions to complete t
 
 ## Hcp Schedule
 
-| Field              | Type          | Nullable | Unique | References         |
-| ------------------ | ------------- | -------- | ------ | ------------------ |
-| id                 | string        | no       | yes    | -                  |
-| hcp_id             | string        | no       | no     | hcp.id             |
-| clinic_location_id | string        | no       | no     | clinic_location.id |
-| available_days     | day_of_week[] | no       | no     | -                  |
-| slot_duration      | integer       | no       | no     | -                  |
-| schedule_expiry_at | datetime      | no       | no     | -                  |
-| created_at         | datetime      | no       | no     | -                  |
-| updated_at         | datetime      | no       | no     | -                  |
+| Field                  | Type          | Nullable | Unique | References              |
+| ---------------------- | ------------- | -------- | ------ | ----------------------- |
+| id                     | string        | no       | yes    | -                       |
+| hcp_clinic_location_id | string        | no       | yes    | hcp_clinic_location.id  |
+| available_days         | day_of_week[] | no       | no     | -                       |
+| slot_duration          | integer       | no       | no     | -                       |
+| created_at             | datetime      | no       | no     | -                       |
+| updated_at             | datetime      | no       | no     | -                       |
 
 `available_days` is limited to `Sunday` through `Saturday`, with the week starting on `Sunday` and ending on `Saturday`.
 `slot_duration` is stored in minutes and defaults to `15`.
-`schedule_expiry_at` should be set to `updated_at + 1 year` so HCPs can review schedule changes annually.
-There should be one active schedule record per HCP-clinic combination.
+The annual review date for a schedule should be derived as `updated_at + 1 year`.
+There should be one active schedule record per `hcp_clinic_location_id`.
 If an HCP is scheduled on any day listed in `available_days`, they are assumed to be available from `8:00` to `18:00`, except for a fixed break from `12:30` to `14:30`.
 
 ## Slot
@@ -130,6 +128,7 @@ If a schedule is updated during the day, all unappointed slots should be deleted
 For example, a scheduled day from `8:00` to `18:00`, excluding the break from `12:30` to `14:30`, with a `15` minute duration yields entries such as `8:00`, `8:15`, and so on.
 Generated slots should be attributable to the `hcp_schedule` record that created them.
 `(hcp_schedule_id, slot_date, slot_time)` should be unique to avoid duplicate HCP slots.
+Each slot can have multiple historical appointment rows attached to it, but only one active appointment request at a time.
 
 ## Appointment
 
@@ -143,7 +142,9 @@ Generated slots should be attributable to the `hcp_schedule` record that created
 | updated_at | datetime           | no       | no     | -          |
 
 `appointment_status` is limited to `PENDING`, `ACCEPTED`, and `REJECTED`.
-`(slot_id, patient_id, status)` should be unique.
+`status` represents the lifecycle of an appointment request for a slot.
+Only one active appointment request per slot should be allowed at a time.
+`PENDING` and `ACCEPTED` are active statuses. `REJECTED` is historical and should not block the slot from being requested again.
 
 ## Speciality
 
