@@ -54,7 +54,7 @@ model Role {
 }
 
 model Permission {
-  id        String   @id @default(cuid())
+  id        Int      @id @default(autoincrement())
   name      String   @unique
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -67,7 +67,7 @@ model Permission {
 model RolePermission {
   id           Int      @id @default(autoincrement())
   roleId       Int      @map("role_id")
-  permissionId String   @map("permission_id")
+  permissionId Int      @map("permission_id")
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 

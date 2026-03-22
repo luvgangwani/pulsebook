@@ -50,7 +50,7 @@ If any of those details are not specified, ask clarifing questions to complete t
 
 | Field      | Type     | Nullable | Unique | References |
 | ---------- | -------- | -------- | ------ | ---------- |
-| id         | string   | no       | yes    | -          |
+| id         | integer  | no       | yes    | -          |
 | name       | string   | no       | yes    | -          |
 | created_at | datetime | no       | no     | -          |
 | updated_at | datetime | no       | no     | -          |
@@ -61,7 +61,7 @@ If any of those details are not specified, ask clarifing questions to complete t
 | ------------- | -------- | -------- | ------ | ------------- |
 | id            | integer  | no       | yes    | -             |
 | role_id       | integer  | no       | no     | role.id       |
-| permission_id | string   | no       | no     | permission.id |
+| permission_id | integer  | no       | no     | permission.id |
 | created_at    | datetime | no       | no     | -             |
 | updated_at    | datetime | no       | no     | -             |
 

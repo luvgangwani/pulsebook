@@ -1,4 +1,4 @@
--- Drop foreign keys and indexes that depend on text-based role IDs
+-- Drop foreign keys and indexes that depend on text-based IDs
 ALTER TABLE "user" DROP CONSTRAINT "user_role_id_fkey";
 ALTER TABLE "role_permission" DROP CONSTRAINT "role_permission_role_id_fkey";
 DROP INDEX "role_permission_role_id_permission_id_key";
