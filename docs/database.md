@@ -12,6 +12,8 @@ If any of those details are not specified, ask clarifing questions to complete t
 | ------------------- |
 | user                |
 | role                |
+| permission          |
+| role_permission     |
 | slot                |
 | patient             |
 | hcp                 |
@@ -31,7 +33,7 @@ If any of those details are not specified, ask clarifing questions to complete t
 | email          | string        | no       | yes    | -          |
 | contact_number | string        | yes      | no     | -          |
 | password       | hashed string | no       | no     | -          |
-| role_id        | string        | no       | no     | role.id    |
+| role_id        | integer       | no       | no     | role.id    |
 | created_at     | datetime      | no       | no     | -          |
 | updated_at     | datetime      | no       | no     | -          |
 
@@ -39,10 +41,32 @@ If any of those details are not specified, ask clarifing questions to complete t
 
 | Field      | Type     | Nullable | Unique | References |
 | ---------- | -------- | -------- | ------ | ---------- |
+| id         | integer  | no       | yes    | -          |
+| name       | string   | no       | yes    | -          |
+| created_at | datetime | no       | no     | -          |
+| updated_at | datetime | no       | no     | -          |
+
+## Permission
+
+| Field      | Type     | Nullable | Unique | References |
+| ---------- | -------- | -------- | ------ | ---------- |
 | id         | string   | no       | yes    | -          |
 | name       | string   | no       | yes    | -          |
 | created_at | datetime | no       | no     | -          |
 | updated_at | datetime | no       | no     | -          |
+
+## Role Permission
+
+| Field         | Type     | Nullable | Unique | References    |
+| ------------- | -------- | -------- | ------ | ------------- |
+| id            | integer  | no       | yes    | -             |
+| role_id       | integer  | no       | no     | role.id       |
+| permission_id | string   | no       | no     | permission.id |
+| created_at    | datetime | no       | no     | -             |
+| updated_at    | datetime | no       | no     | -             |
+
+`(role_id, permission_id)` should be unique to avoid duplicate role-permission assignments.
+Roles act as permission bundles and `user.role_id` remains the user's assigned primary role.
 
 ## Patient
 
