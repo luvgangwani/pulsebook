@@ -28,6 +28,19 @@ For more information refer the below table:
 
 Keep new backend features grouped by module in `apps/api/src/<feature>/`. Keep shared database concerns in `packages/database` rather than duplicating schema or client setup inside apps.
 
+When creating a new API module:
+
+- create a feature folder in `apps/api/src/<feature>/`
+- add `<feature>.module.ts`, controller, service, and any DTOs inside that folder
+- keep `<feature>.module.ts` responsible for wiring the feature's controller, service, and any imported shared modules
+- keep the controller responsible for HTTP routes, request/response boundaries, and passing validated data to the service
+- keep the service responsible for the feature's business logic and database orchestration
+- keep DTOs responsible for request validation and normalization
+- import the feature module into `apps/api/src/app.module.ts`
+- keep request validation in DTOs and enable it through the app bootstrap, not controllers
+- put shared Prisma access in a reusable database service/module rather than instantiating Prisma in each feature
+- if the feature needs database access, import the shared database module and use the Prisma service from there
+
 ## Build, Test, and Development Commands
 
 - `pnpm install`: install workspace dependencies
