@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
@@ -15,12 +16,17 @@ import { promisify } from "node:util";
 import { PrismaService } from "../database/prisma.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
+import { RegisterHcpDto } from "./dto/register-hcp.dto";
+import { RegisterPatientDto } from "./dto/register-patient.dto";
+import {
+  ACCESS_TOKEN_TTL_SECONDS,
+  EMAIL_LOGIN_FAILURE_MESSAGE,
+  PASSWORD_LOGIN_FAILURE_MESSAGE,
+} from "./constants";
+import { AuthenticatedUser } from "./jwt-auth.guard";
 
 const scrypt = promisify(nodeScrypt);
 const SCRYPT_KEY_LENGTH = 64;
-const ACCESS_TOKEN_TTL_SECONDS = 60 * 60;
-const EMAIL_LOGIN_FAILURE_MESSAGE = "No user registered with this email.";
-const PASSWORD_LOGIN_FAILURE_MESSAGE = "Incorrect password.";
 
 @Injectable()
 export class UsersService {
@@ -106,6 +112,110 @@ export class UsersService {
         role_name: user.role.name,
       }),
       token_type: "Bearer",
+      email: user.email,
+    };
+  }
+
+  async registerPatient(
+    currentUser: AuthenticatedUser,
+    registerPatientDto: RegisterPatientDto,
+  ) {
+    const [user, existingPatient, preferredSpeciality] = await Promise.all([
+      this.prisma.user.findUnique({
+        where: { id: currentUser.sub },
+      }),
+      this.prisma.patient.findUnique({
+        where: { userId: currentUser.sub },
+      }),
+      registerPatientDto.preferred_speciality_id
+        ? this.prisma.speciality.findUnique({
+            where: { id: registerPatientDto.preferred_speciality_id },
+          })
+        : Promise.resolve(null),
+    ]);
+
+    if (!user) {
+      throw new NotFoundException("Authenticated user was not found.");
+    }
+
+    if (existingPatient) {
+      throw new ConflictException("A patient profile already exists for this user.");
+    }
+
+    if (
+      registerPatientDto.preferred_speciality_id &&
+      !preferredSpeciality
+    ) {
+      throw new BadRequestException("Invalid preferred_speciality_id.");
+    }
+
+    const patient = await this.prisma.patient.create({
+      data: {
+        userId: user.id,
+        addressLine1: registerPatientDto.address_line_1,
+        addressLine2: registerPatientDto.address_line_2,
+        suburb: registerPatientDto.suburb,
+        state: registerPatientDto.state,
+        postcode: registerPatientDto.postcode,
+        preferredSpecialityId: registerPatientDto.preferred_speciality_id,
+      },
+    });
+
+    return {
+      id: patient.id,
+      user_id: patient.userId,
+      address_line_1: patient.addressLine1,
+      address_line_2: patient.addressLine2,
+      suburb: patient.suburb,
+      state: patient.state,
+      postcode: patient.postcode,
+      preferred_speciality_id: patient.preferredSpecialityId,
+      created_at: patient.createdAt.toISOString(),
+      updated_at: patient.updatedAt.toISOString(),
+    };
+  }
+
+  async registerHcp(
+    currentUser: AuthenticatedUser,
+    registerHcpDto: RegisterHcpDto,
+  ) {
+    const [user, existingHcp, speciality] = await Promise.all([
+      this.prisma.user.findUnique({
+        where: { id: currentUser.sub },
+      }),
+      this.prisma.hcp.findUnique({
+        where: { userId: currentUser.sub },
+      }),
+      this.prisma.speciality.findUnique({
+        where: { id: registerHcpDto.speciality_id },
+      }),
+    ]);
+
+    if (!user) {
+      throw new NotFoundException("Authenticated user was not found.");
+    }
+
+    if (existingHcp) {
+      throw new ConflictException("An HCP profile already exists for this user.");
+    }
+
+    if (!speciality) {
+      throw new BadRequestException("Invalid speciality_id.");
+    }
+
+    const hcp = await this.prisma.hcp.create({
+      data: {
+        userId: user.id,
+        specialityId: registerHcpDto.speciality_id,
+      },
+    });
+
+    return {
+      id: hcp.id,
+      user_id: hcp.userId,
+      speciality_id: hcp.specialityId,
+      created_at: hcp.createdAt.toISOString(),
+      updated_at: hcp.updatedAt.toISOString(),
     };
   }
 
