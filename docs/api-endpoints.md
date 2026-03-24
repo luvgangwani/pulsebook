@@ -75,6 +75,7 @@ Authenticates an existing user and returns an access token.
   - `access_token`
   - `token_type`
   - `email`
+- Sets the `access_token` as an HTTP-only cookie for browser requests.
 - The access token contains the authenticated user's ID, email, role ID, and role name.
 
 #### Error Responses
@@ -82,3 +83,72 @@ Authenticates an existing user and returns an access token.
 - `400 Bad Request` for invalid or missing input fields.
 - `401 Unauthorized` if no user is registered with the submitted email.
 - `401 Unauthorized` if the submitted password is incorrect.
+
+## Patient Register
+
+### `POST /api/users/register/patient`
+
+Creates the patient profile for the authenticated user after the base account has already been created.
+
+#### Request Body
+
+Authenticated second-step endpoint.
+- Requires a valid access token from `POST /api/users/login`.
+- Uses the authenticated user from the bearer token or `access_token` cookie.
+- Does not accept `role_id` or `user_id` in the request body.
+
+Additional patient fields:
+
+| Field                   | Type    | Required | Notes                            |
+| ----------------------- | ------- | -------- | -------------------------------- |
+| postcode                | string  | yes      | Patient postcode.                |
+| address_line_1          | string  | no       | Patient address line 1.          |
+| address_line_2          | string  | no       | Patient address line 2.          |
+| suburb                  | string  | no       | Patient suburb.                  |
+| state                   | string  | no       | Patient state.                   |
+| preferred_speciality_id | string  | no       | References `speciality.id`.      |
+
+#### Success Response
+
+- `201 Created`
+- Creates the related patient profile for the authenticated user.
+- Returns the created patient payload.
+
+#### Error Responses
+
+- `400 Bad Request` for invalid or missing input fields.
+- `400 Bad Request` if the authenticated user does not have the `PATIENT` role.
+- `401 Unauthorized` if the request is not authenticated.
+- `409 Conflict` if a patient profile already exists for the authenticated user.
+
+## HCP Register
+
+### `POST /api/users/register/hcp`
+
+Creates the HCP profile for the authenticated user after the base account has already been created.
+
+#### Request Body
+
+Authenticated second-step endpoint.
+- Requires a valid access token from `POST /api/users/login`.
+- Uses the authenticated user from the bearer token or `access_token` cookie.
+- Does not accept `role_id` or `user_id` in the request body.
+
+Additional HCP fields:
+
+| Field         | Type   | Required | Notes                       |
+| ------------- | ------ | -------- | --------------------------- |
+| speciality_id | string | yes      | References `speciality.id`. |
+
+#### Success Response
+
+- `201 Created`
+- Creates the related HCP profile for the authenticated user.
+- Returns the created HCP payload.
+
+#### Error Responses
+
+- `400 Bad Request` for invalid or missing input fields.
+- `400 Bad Request` if the authenticated user does not have the `HCP` role.
+- `401 Unauthorized` if the request is not authenticated.
+- `409 Conflict` if an HCP profile already exists for the authenticated user.
