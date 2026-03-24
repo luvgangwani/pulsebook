@@ -55,21 +55,6 @@ Registers a new user account in the system.
 - `400 Bad Request` for invalid or missing input fields.
 - `409 Conflict` if the email already exists.
 
-#### Test Request
-
-```bash
-curl -X POST http://localhost:3001/api/users/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "first_name": "Jane",
-    "last_name": "Doe",
-    "email": "jane.doe@example.com",
-    "contact_number": "0400000000",
-    "password": "Password123!",
-    "role_id": 1
-  }'
-```
-
 ## User Login
 
 ### `POST /api/users/login`
@@ -86,10 +71,14 @@ Authenticates an existing user and returns an access token.
 #### Success Response
 
 - `200 OK`
-- Returns an access token payload.
-- The access token should contain the authenticated user's information and role information.
+- Returns a bearer token response with:
+  - `access_token`
+  - `token_type`
+  - `email`
+- The access token contains the authenticated user's ID, email, role ID, and role name.
 
 #### Error Responses
 
 - `400 Bad Request` for invalid or missing input fields.
-- `401 Unauthorized` for invalid credentials.
+- `401 Unauthorized` if no user is registered with the submitted email.
+- `401 Unauthorized` if the submitted password is incorrect.

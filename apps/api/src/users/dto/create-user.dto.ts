@@ -1,20 +1,10 @@
 import { Transform, Type } from "class-transformer";
 import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString, Min } from "class-validator";
-
-const trimString = ({ value }: { value: unknown }) =>
-  typeof value === "string" ? value.trim() : value;
-
-const trimOptionalString = ({ value }: { value: unknown }) => {
-  if (typeof value !== "string") {
-    return value;
-  }
-
-  const trimmedValue = value.trim();
-  return trimmedValue === "" ? undefined : trimmedValue;
-};
-
-const normalizeEmail = ({ value }: { value: unknown }) =>
-  typeof value === "string" ? value.trim().toLowerCase() : value;
+import {
+  normalizeEmail,
+  trimOptionalString,
+  trimString
+} from "./user-dto.transforms";
 
 export class CreateUserDto {
   @Transform(trimString)
