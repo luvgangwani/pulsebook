@@ -6,5 +6,5 @@ export class RegisterHcpDto {
   @Transform(trimString)
   @IsString()
   @IsNotEmpty()
-  speciality_id!: string;
+  specialityId!: string;
 }

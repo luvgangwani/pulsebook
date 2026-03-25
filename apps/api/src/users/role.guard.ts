@@ -29,7 +29,7 @@ export class RoleGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<RequestLike>();
     const currentUser = request.user;
 
-    if (!currentUser || !allowedRoles.includes(currentUser.role_name)) {
+    if (!currentUser || !allowedRoles.includes(currentUser.roleName)) {
       throw new BadRequestException(
         `This endpoint requires one of these roles: ${allowedRoles.join(", ")}.`,
       );

@@ -63,6 +63,8 @@ Use TypeScript everywhere. Follow the existing style:
 - `kebab-case` for feature folders such as `src/health/`
 - If there are any new values that are being used across the `/api` or `/web` apps put them in a `constants.ts` file within the respective directory
 - If there are any mappings/configurations that are being used across the `/api` or `/web` apps put them in a `config.ts` within the respective directory
+- Use `camelCase` for TypeScript-facing names across the repo, including DTO fields, request payloads, response payloads, variables, and object keys
+- Reserve `snake_case` for actual database column names and Prisma `@map(...)` mappings to those database fields
 
 Prefer small modules with explicit exports. Keep Next route files inside `src/app` and Nest controllers/services close to their feature module.
 

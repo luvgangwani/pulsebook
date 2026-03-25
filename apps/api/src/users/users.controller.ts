@@ -47,7 +47,7 @@ export class UsersController {
 
     response.cookie(
       ACCESS_TOKEN_COOKIE_NAME,
-      loginResponse.access_token,
+      loginResponse.accessToken,
       ACCESS_TOKEN_COOKIE_OPTIONS,
     );
 
