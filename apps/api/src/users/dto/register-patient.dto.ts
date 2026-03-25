@@ -6,12 +6,12 @@ export class RegisterPatientDto {
   @Transform(trimOptionalString)
   @IsOptional()
   @IsString()
-  address_line_1?: string;
+  addressLine1?: string;
 
   @Transform(trimOptionalString)
   @IsOptional()
   @IsString()
-  address_line_2?: string;
+  addressLine2?: string;
 
   @Transform(trimOptionalString)
   @IsOptional()
@@ -31,5 +31,5 @@ export class RegisterPatientDto {
   @Transform(trimOptionalString)
   @IsOptional()
   @IsString()
-  preferred_speciality_id?: string;
+  preferredSpecialityId?: string;
 }

@@ -10,12 +10,12 @@ export class CreateUserDto {
   @Transform(trimString)
   @IsString()
   @IsNotEmpty()
-  first_name!: string;
+  firstName!: string;
 
   @Transform(trimOptionalString)
   @IsOptional()
   @IsString()
-  last_name?: string;
+  lastName?: string;
 
   @Transform(normalizeEmail)
   @IsEmail()
@@ -24,7 +24,7 @@ export class CreateUserDto {
   @Transform(trimOptionalString)
   @IsOptional()
   @IsString()
-  contact_number?: string;
+  contactNumber?: string;
 
   @Transform(trimString)
   @IsString()
@@ -34,5 +34,5 @@ export class CreateUserDto {
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  role_id!: number;
+  roleId!: number;
 }

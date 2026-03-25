@@ -36,14 +36,14 @@ Registers a new user account in the system.
 
 #### Request Body
 
-| Field          | Type    | Required | Notes                                                    |
-| -------------- | ------- | -------- | -------------------------------------------------------- |
-| first_name     | string  | yes      | User's given name.                                       |
-| last_name      | string  | no       | User's family name.                                      |
-| email          | string  | yes      | Must be unique across all users.                         |
-| contact_number | string  | no       | User's contact phone number.                             |
-| password       | string  | yes      | Submitted by the client and stored as a hashed password. |
-| role_id        | integer | yes      | References `role.id`.                                    |
+| Field         | Type    | Required | Notes                                                    |
+| ------------- | ------- | -------- | -------------------------------------------------------- |
+| firstName     | string  | yes      | User's given name.                                       |
+| lastName      | string  | no       | User's family name.                                      |
+| email         | string  | yes      | Must be unique across all users.                         |
+| contactNumber | string  | no       | User's contact phone number.                             |
+| password      | string  | yes      | Submitted by the client and stored as a hashed password. |
+| roleId        | integer | yes      | References `role.id`.                                    |
 
 #### Success Response
 
@@ -72,11 +72,11 @@ Authenticates an existing user and returns an access token.
 
 - `200 OK`
 - Returns a bearer token response with:
-  - `access_token`
-  - `token_type`
+  - `accessToken`
+  - `tokenType`
   - `email`
 - Sets the `access_token` as an HTTP-only cookie for browser requests.
-- The access token contains the authenticated user's ID, email, role ID, and role name.
+- The access token contains the authenticated user's ID, email, role ID, and role name in camelCase claims.
 
 #### Error Responses
 
@@ -95,18 +95,18 @@ Creates the patient profile for the authenticated user after the base account ha
 Authenticated second-step endpoint.
 - Requires a valid access token from `POST /api/users/login`.
 - Uses the authenticated user from the bearer token or `access_token` cookie.
-- Does not accept `role_id` or `user_id` in the request body.
+- Does not accept `roleId` or `userId` in the request body.
 
 Additional patient fields:
 
-| Field                   | Type    | Required | Notes                            |
-| ----------------------- | ------- | -------- | -------------------------------- |
-| postcode                | string  | yes      | Patient postcode.                |
-| address_line_1          | string  | no       | Patient address line 1.          |
-| address_line_2          | string  | no       | Patient address line 2.          |
-| suburb                  | string  | no       | Patient suburb.                  |
-| state                   | string  | no       | Patient state.                   |
-| preferred_speciality_id | string  | no       | References `speciality.id`.      |
+| Field                | Type    | Required | Notes                       |
+| -------------------- | ------- | -------- | --------------------------- |
+| postcode             | string  | yes      | Patient postcode.           |
+| addressLine1         | string  | no       | Patient address line 1.     |
+| addressLine2         | string  | no       | Patient address line 2.     |
+| suburb               | string  | no       | Patient suburb.             |
+| state                | string  | no       | Patient state.              |
+| preferredSpecialityId | string | no       | References `speciality.id`. |
 
 #### Success Response
 
@@ -132,13 +132,13 @@ Creates the HCP profile for the authenticated user after the base account has al
 Authenticated second-step endpoint.
 - Requires a valid access token from `POST /api/users/login`.
 - Uses the authenticated user from the bearer token or `access_token` cookie.
-- Does not accept `role_id` or `user_id` in the request body.
+- Does not accept `roleId` or `userId` in the request body.
 
 Additional HCP fields:
 
-| Field         | Type   | Required | Notes                       |
-| ------------- | ------ | -------- | --------------------------- |
-| speciality_id | string | yes      | References `speciality.id`. |
+| Field        | Type   | Required | Notes                       |
+| ------------ | ------ | -------- | --------------------------- |
+| specialityId | string | yes      | References `speciality.id`. |
 
 #### Success Response
 

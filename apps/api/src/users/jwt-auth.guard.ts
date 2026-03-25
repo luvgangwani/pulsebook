@@ -23,8 +23,8 @@ type RequestLike = {
 export type AuthenticatedUser = {
   sub: string;
   email: string;
-  role_id: number;
-  role_name: string;
+  roleId: number;
+  roleName: string;
 };
 
 @Injectable()
@@ -107,8 +107,8 @@ export class JwtAuthGuard implements CanActivate {
     if (
       typeof payload.sub !== "string" ||
       typeof payload.email !== "string" ||
-      typeof payload.role_id !== "number" ||
-      typeof payload.role_name !== "string"
+      typeof payload.roleId !== "number" ||
+      typeof payload.roleName !== "string"
     ) {
       throw new UnauthorizedException(INVALID_ACCESS_TOKEN_MESSAGE);
     }
@@ -120,8 +120,8 @@ export class JwtAuthGuard implements CanActivate {
     return {
       sub: payload.sub,
       email: payload.email,
-      role_id: payload.role_id,
-      role_name: payload.role_name,
+      roleId: payload.roleId,
+      roleName: payload.roleName,
     };
   }
 }

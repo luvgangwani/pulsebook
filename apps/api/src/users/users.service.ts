@@ -34,11 +34,11 @@ export class UsersService {
 
   async register(createUserDto: CreateUserDto) {
     const role = await this.prisma.role.findUnique({
-      where: { id: createUserDto.role_id },
+      where: { id: createUserDto.roleId },
     });
 
     if (!role) {
-      throw new BadRequestException("Invalid role_id.");
+      throw new BadRequestException("Invalid roleId.");
     }
 
     const existingUser = await this.prisma.user.findUnique({
@@ -54,24 +54,24 @@ export class UsersService {
     try {
       const user = await this.prisma.user.create({
         data: {
-          firstName: createUserDto.first_name,
-          lastName: createUserDto.last_name,
+          firstName: createUserDto.firstName,
+          lastName: createUserDto.lastName,
           email: createUserDto.email,
-          contactNumber: createUserDto.contact_number,
+          contactNumber: createUserDto.contactNumber,
           password: hashedPassword,
-          roleId: createUserDto.role_id,
+          roleId: createUserDto.roleId,
         },
       });
 
       return {
         id: user.id,
-        first_name: user.firstName,
-        last_name: user.lastName,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
-        contact_number: user.contactNumber,
-        role_id: user.roleId,
-        created_at: user.createdAt.toISOString(),
-        updated_at: user.updatedAt.toISOString(),
+        contactNumber: user.contactNumber,
+        roleId: user.roleId,
+        createdAt: user.createdAt.toISOString(),
+        updatedAt: user.updatedAt.toISOString(),
       };
     } catch (error) {
       if (
@@ -105,13 +105,13 @@ export class UsersService {
     }
 
     return {
-      access_token: this.createAccessToken({
+      accessToken: this.createAccessToken({
         sub: user.id,
         email: user.email,
-        role_id: user.roleId,
-        role_name: user.role.name,
+        roleId: user.roleId,
+        roleName: user.role.name,
       }),
-      token_type: "Bearer",
+      tokenType: "Bearer",
       email: user.email,
     };
   }
@@ -127,9 +127,9 @@ export class UsersService {
       this.prisma.patient.findUnique({
         where: { userId: currentUser.sub },
       }),
-      registerPatientDto.preferred_speciality_id
+      registerPatientDto.preferredSpecialityId
         ? this.prisma.speciality.findUnique({
-            where: { id: registerPatientDto.preferred_speciality_id },
+            where: { id: registerPatientDto.preferredSpecialityId },
           })
         : Promise.resolve(null),
     ]);
@@ -143,35 +143,35 @@ export class UsersService {
     }
 
     if (
-      registerPatientDto.preferred_speciality_id &&
+      registerPatientDto.preferredSpecialityId &&
       !preferredSpeciality
     ) {
-      throw new BadRequestException("Invalid preferred_speciality_id.");
+      throw new BadRequestException("Invalid preferredSpecialityId.");
     }
 
     const patient = await this.prisma.patient.create({
       data: {
         userId: user.id,
-        addressLine1: registerPatientDto.address_line_1,
-        addressLine2: registerPatientDto.address_line_2,
+        addressLine1: registerPatientDto.addressLine1,
+        addressLine2: registerPatientDto.addressLine2,
         suburb: registerPatientDto.suburb,
         state: registerPatientDto.state,
         postcode: registerPatientDto.postcode,
-        preferredSpecialityId: registerPatientDto.preferred_speciality_id,
+        preferredSpecialityId: registerPatientDto.preferredSpecialityId,
       },
     });
 
     return {
       id: patient.id,
-      user_id: patient.userId,
-      address_line_1: patient.addressLine1,
-      address_line_2: patient.addressLine2,
+      userId: patient.userId,
+      addressLine1: patient.addressLine1,
+      addressLine2: patient.addressLine2,
       suburb: patient.suburb,
       state: patient.state,
       postcode: patient.postcode,
-      preferred_speciality_id: patient.preferredSpecialityId,
-      created_at: patient.createdAt.toISOString(),
-      updated_at: patient.updatedAt.toISOString(),
+      preferredSpecialityId: patient.preferredSpecialityId,
+      createdAt: patient.createdAt.toISOString(),
+      updatedAt: patient.updatedAt.toISOString(),
     };
   }
 
@@ -187,7 +187,7 @@ export class UsersService {
         where: { userId: currentUser.sub },
       }),
       this.prisma.speciality.findUnique({
-        where: { id: registerHcpDto.speciality_id },
+        where: { id: registerHcpDto.specialityId },
       }),
     ]);
 
@@ -200,22 +200,22 @@ export class UsersService {
     }
 
     if (!speciality) {
-      throw new BadRequestException("Invalid speciality_id.");
+      throw new BadRequestException("Invalid specialityId.");
     }
 
     const hcp = await this.prisma.hcp.create({
       data: {
         userId: user.id,
-        specialityId: registerHcpDto.speciality_id,
+        specialityId: registerHcpDto.specialityId,
       },
     });
 
     return {
       id: hcp.id,
-      user_id: hcp.userId,
-      speciality_id: hcp.specialityId,
-      created_at: hcp.createdAt.toISOString(),
-      updated_at: hcp.updatedAt.toISOString(),
+      userId: hcp.userId,
+      specialityId: hcp.specialityId,
+      createdAt: hcp.createdAt.toISOString(),
+      updatedAt: hcp.updatedAt.toISOString(),
     };
   }
 
@@ -255,8 +255,8 @@ export class UsersService {
   private createAccessToken(payload: {
     sub: string;
     email: string;
-    role_id: number;
-    role_name: string;
+    roleId: number;
+    roleName: string;
   }) {
     const nowInSeconds = Math.floor(Date.now() / 1000);
     const secret = process.env.JWT_SECRET;
