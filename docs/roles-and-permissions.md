@@ -1,6 +1,6 @@
 # Roles And Permissions
 
-This document gives product and implementation context for the role and permission model defined in [database.md](/Users/luvgangwani/Repos/pulsebook/docs/database.md).
+This document gives product and implementation context for the role and permission model defined in [database.md](./database.md).
 
 ## Overview
 
@@ -112,6 +112,6 @@ Mapped permissions:
 
 ## Source Of Truth
 
-- Data model and table definitions: [database.md](/Users/luvgangwani/Repos/pulsebook/docs/database.md)
-- Prisma schema: [schema.prisma](/Users/luvgangwani/Repos/pulsebook/packages/database/prisma/schema.prisma)
-- Seeded role-permission mappings: [20260321225124_add_permissions_and_role_permissions/migration.sql](/Users/luvgangwani/Repos/pulsebook/packages/database/prisma/migrations/20260321225124_add_permissions_and_role_permissions/migration.sql)
+- Data model and table definitions: [database.md](./database.md)
+- Prisma schema: [schema.prisma](../packages/database/prisma/schema.prisma)
+- Seeded role-permission mappings: [20260321225124_add_permissions_and_role_permissions/migration.sql](../packages/database/prisma/migrations/20260321225124_add_permissions_and_role_permissions/migration.sql)
