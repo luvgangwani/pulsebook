@@ -16,19 +16,24 @@ Finish a standard git delivery flow: inspect changes, commit them, push the curr
 3. Write a short imperative commit message. Add the required co-author trailer if the repository instructions require it.
 4. Commit with non-interactive git commands.
 5. Push the current branch to `origin`.
-6. Resolve the PR base branch, usually `main`, and capture immutable review refs after push:
-   - `base_sha`: the current base branch SHA, for example `git rev-parse origin/<BASE_BRANCH>`
+6. Resolve the PR base branch before review:
+   - If a PR already exists, use its actual base branch.
+   - If no PR exists, use the configured/default base branch, usually `main`.
+7. Fetch the resolved base branch from origin.
+8. Capture immutable review refs after push and fetch:
+   - `base_sha`: the fetched base branch SHA, for example `git rev-parse origin/<BASE_BRANCH>`
    - `head_sha`: the current branch `HEAD`, for example `git rev-parse HEAD`
-7. Run pre-PR review using four parallel subagents, one per review category:
+9. Run pre-PR review using four parallel subagents, one per review category:
    - Security Issues
    - Code Quality
    - Potential Race Conditions
    - Maintainability
-8. If parallel subagents are unavailable, run the same four reviews sequentially with the same prompts.
-9. Wait for all four reviews to finish before creating a PR.
-10. Summarize each review result separately. Include blocking findings, non-blocking notes, and any explicit "no findings" result.
-11. Check whether a PR already exists for the branch.
-12. If a PR exists, update its description with the latest summary, review results, and verification. If not, create one against the resolved base branch with those sections in the PR description.
+10. If parallel subagents are unavailable, run the same four reviews sequentially with the same prompts.
+11. Wait for all four reviews to finish before creating or updating a PR.
+12. Summarize each review result separately. Include blocking findings, non-blocking notes, and any explicit "no findings" result.
+13. Before PR creation or update, verify the remote branch still points at the captured `head_sha`.
+14. If the remote branch moved, stop and rerun the reviews against the new `head_sha`.
+15. If a PR exists, update its description with the latest summary, review results, and verification. If not, create one against the resolved base branch with those sections in the PR description.
 
 ## Subagent Review Instructions
 
