@@ -1,0 +1,61 @@
+---
+name: git-commit-push-pr
+description: Commit current changes, push the current branch, run focused pre-PR review subagents, and create or update a GitHub pull request. Use when the user wants Codex to finish a git workflow after code or docs changes, including staging files, committing, pushing to origin, running review agents, and opening or checking a PR.
+---
+
+# Git Commit Push PR
+
+## Overview
+
+Finish a standard git delivery flow: inspect changes, commit them, push the current branch, run focused review agents, and create or update the GitHub PR.
+
+## Workflow
+
+1. Inspect the current branch and worktree before mutating anything.
+2. Stage only the files that belong to the requested change. Do not include unrelated local files unless the user explicitly asks.
+3. Write a short imperative commit message. Add the required co-author trailer if the repository instructions require it.
+4. Commit with non-interactive git commands.
+5. Push the current branch to `origin`.
+6. Run pre-PR review using four parallel subagents, one per review category:
+   - Security Issues
+   - Code Quality
+   - Potential Race Conditions
+   - Maintainability
+7. Wait for all four subagents to finish before creating a PR.
+8. Summarize each subagent result separately. Include blocking findings, non-blocking notes, and any explicit "no findings" result.
+9. Check whether a PR already exists for the branch.
+10. If a PR exists, update its description with the latest summary, review-agent results, and verification. If not, create one against the appropriate base branch, usually `main`, with those sections in the PR description.
+
+## Subagent Review Instructions
+
+Each subagent should receive only the current branch context and its assigned review category. Ask it to inspect the branch diff against the PR base and report concise findings with file references where applicable.
+
+Use this review shape for every subagent:
+
+```text
+Review the current branch diff against main for <CATEGORY>. Focus only on that category. Return findings ordered by severity with file references. If there are no findings, state "No findings" and mention any residual risk.
+```
+
+Do not create the PR until all four review summaries are available.
+
+## Guardrails
+
+- Prefer `git status --short`, `git branch --show-current`, and `gh pr view` to understand the state first.
+- Never use destructive git commands unless the user explicitly asks.
+- If there are uncommitted unrelated changes, keep them out of the commit and mention them in the final response.
+- Use non-interactive git commands only.
+- If push or PR creation needs GitHub auth or sandbox escalation, request it directly through the available tools.
+- If a subagent reports a likely blocking issue, stop before PR creation and ask the user whether to fix it first.
+
+## PR Defaults
+
+- Default PR base branch to `main` unless the repo or user says otherwise.
+- Use a concise PR title aligned with the commit or the user request.
+- Keep the PR body short: summary, subagent review results, and verification.
+- Include a `Subagent Review` section in the PR description with one entry for each category:
+  - Security Issues
+  - Code Quality
+  - Potential Race Conditions
+  - Maintainability
+- For each review category, summarize the subagent result as either blocking findings, non-blocking findings, or `No findings`.
+- If the branch already has an open PR, do not create a duplicate PR.
