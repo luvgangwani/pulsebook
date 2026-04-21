@@ -16,24 +16,28 @@ Finish a standard git delivery flow: inspect changes, commit them, push the curr
 3. Write a short imperative commit message. Add the required co-author trailer if the repository instructions require it.
 4. Commit with non-interactive git commands.
 5. Push the current branch to `origin`.
-6. Run pre-PR review using four parallel subagents, one per review category:
+6. Resolve the PR base branch, usually `main`, and capture immutable review refs after push:
+   - `base_sha`: the current base branch SHA, for example `git rev-parse origin/<BASE_BRANCH>`
+   - `head_sha`: the current branch `HEAD`, for example `git rev-parse HEAD`
+7. Run pre-PR review using four parallel subagents, one per review category:
    - Security Issues
    - Code Quality
    - Potential Race Conditions
    - Maintainability
-7. Wait for all four subagents to finish before creating a PR.
-8. Summarize each subagent result separately. Include blocking findings, non-blocking notes, and any explicit "no findings" result.
-9. Check whether a PR already exists for the branch.
-10. If a PR exists, update its description with the latest summary, review-agent results, and verification. If not, create one against the appropriate base branch, usually `main`, with those sections in the PR description.
+8. If parallel subagents are unavailable, run the same four reviews sequentially with the same prompts.
+9. Wait for all four reviews to finish before creating a PR.
+10. Summarize each review result separately. Include blocking findings, non-blocking notes, and any explicit "no findings" result.
+11. Check whether a PR already exists for the branch.
+12. If a PR exists, update its description with the latest summary, review results, and verification. If not, create one against the resolved base branch with those sections in the PR description.
 
 ## Subagent Review Instructions
 
-Each subagent should receive only the current branch context and its assigned review category. Ask it to inspect the branch diff against the PR base and report concise findings with file references where applicable.
+Each subagent should receive only the captured review refs and its assigned review category. Ask it to inspect `base_sha...head_sha` and report concise findings with file references where applicable.
 
 Use this review shape for every subagent:
 
 ```text
-Review the current branch diff against main for <CATEGORY>. Focus only on that category. Return findings ordered by severity with file references. If there are no findings, state "No findings" and mention any residual risk.
+Review the diff from <BASE_SHA> to <HEAD_SHA> for <CATEGORY>. Focus only on that category. Return findings ordered by severity with file references. If there are no findings, state "No findings" and mention any residual risk.
 ```
 
 Do not create the PR until all four review summaries are available.
@@ -45,7 +49,7 @@ Do not create the PR until all four review summaries are available.
 - If there are uncommitted unrelated changes, keep them out of the commit and mention them in the final response.
 - Use non-interactive git commands only.
 - If push or PR creation needs GitHub auth or sandbox escalation, request it directly through the available tools.
-- If a subagent reports a likely blocking issue, stop before PR creation and ask the user whether to fix it first.
+- Treat security, data-loss, build-breaking, and clear behavioral-regression findings as blocking. Stop before PR creation and ask the user whether to fix them first.
 
 ## PR Defaults
 
