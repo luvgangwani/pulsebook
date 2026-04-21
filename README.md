@@ -72,3 +72,9 @@ Start the API and call:
 ```bash
 curl http://localhost:3001/api/health
 ```
+
+## PR Review Automation
+
+We considered adding subagent-based PR review to the local `git-commit-push-pr` workflow, with separate checks for security, code quality, race conditions, and maintainability. That approach is not enabled for this project right now because it consumes too many tokens for routine small PRs and makes the commit/push flow slower.
+
+If we revisit this later, the expected shape is to capture a fixed base/head diff, run one focused reviewer per category, summarize the findings in the PR description, and only create or update the PR after all reviews complete.
