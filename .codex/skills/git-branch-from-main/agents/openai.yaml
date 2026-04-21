@@ -1,0 +1,4 @@
+interface:
+  display_name: "Git Branch From Main"
+  short_description: "Update main and create a branch"
+  default_prompt: "Use $git-branch-from-main to update main and create a new branch from it."
