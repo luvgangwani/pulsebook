@@ -193,3 +193,33 @@ Creates a clinic location and stores the authenticated creator in `createdBy`.
 - `400 Bad Request` for invalid or missing input fields.
 - `400 Bad Request` if the authenticated user does not have the `ADMIN` role.
 - `401 Unauthorized` if the request is not authenticated.
+
+## Clinic Location List
+
+### `GET /api/clinic-locations`
+
+Returns all clinic locations for admin users.
+
+#### Access Control
+
+- Authenticated endpoint
+- Requires `ADMIN` role
+
+#### Success Response
+
+- `200 OK`
+- Returns an array of clinic location payloads:
+  - `id`
+  - `addressLine1`
+  - `addressLine2`
+  - `suburb`
+  - `state`
+  - `postcode`
+  - `createdBy`
+  - `createdAt`
+  - `updatedAt`
+
+#### Error Responses
+
+- `400 Bad Request` if the authenticated user does not have the `ADMIN` role.
+- `401 Unauthorized` if the request is not authenticated.
