@@ -7,6 +7,26 @@ import { CreateClinicLocationDto } from "./dto/create-clinic-location.dto";
 export class ClinicLocationsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async getClinicLocations() {
+    const clinicLocations = await this.prisma.clinicLocation.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return clinicLocations.map((clinicLocation) => ({
+      id: clinicLocation.id,
+      addressLine1: clinicLocation.addressLine1,
+      addressLine2: clinicLocation.addressLine2,
+      suburb: clinicLocation.suburb,
+      state: clinicLocation.state,
+      postcode: clinicLocation.postcode,
+      createdBy: clinicLocation.createdBy,
+      createdAt: clinicLocation.createdAt.toISOString(),
+      updatedAt: clinicLocation.updatedAt.toISOString(),
+    }));
+  }
+
   async createClinicLocation(
     currentUser: AuthenticatedUser,
     createClinicLocationDto: CreateClinicLocationDto,

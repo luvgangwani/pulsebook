@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
 import { AllowedRoles } from "../users/allowed-roles.decorator";
 import { CurrentUser } from "../users/current-user.decorator";
 import { AuthenticatedUser, JwtAuthGuard } from "../users/jwt-auth.guard";
@@ -9,6 +9,13 @@ import { CreateClinicLocationDto } from "./dto/create-clinic-location.dto";
 @Controller("clinic-locations")
 export class ClinicLocationsController {
   constructor(private readonly clinicLocationsService: ClinicLocationsService) {}
+
+  @Get()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @AllowedRoles("ADMIN")
+  async getClinicLocations() {
+    return this.clinicLocationsService.getClinicLocations();
+  }
 
   @Post()
   @UseGuards(JwtAuthGuard, RoleGuard)
