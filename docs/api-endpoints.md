@@ -152,3 +152,44 @@ Additional HCP fields:
 - `400 Bad Request` if the authenticated user does not have the `HCP` role.
 - `401 Unauthorized` if the request is not authenticated.
 - `409 Conflict` if an HCP profile already exists for the authenticated user.
+
+## Clinic Location Create
+
+### `POST /api/clinic-locations`
+
+Creates a clinic location and stores the authenticated creator in `createdBy`.
+
+#### Access Control
+
+- Authenticated endpoint
+- Requires `ADMIN` role
+
+#### Request Body
+
+| Field        | Type   | Required | Notes                      |
+| ------------ | ------ | -------- | -------------------------- |
+| addressLine1 | string | no       | Clinic address line 1.     |
+| addressLine2 | string | no       | Clinic address line 2.     |
+| suburb       | string | no       | Clinic suburb.             |
+| state        | string | no       | Clinic state.              |
+| postcode     | string | yes      | Clinic postcode.           |
+
+#### Success Response
+
+- `201 Created`
+- Returns the created clinic location payload:
+  - `id`
+  - `addressLine1`
+  - `addressLine2`
+  - `suburb`
+  - `state`
+  - `postcode`
+  - `createdBy`
+  - `createdAt`
+  - `updatedAt`
+
+#### Error Responses
+
+- `400 Bad Request` for invalid or missing input fields.
+- `400 Bad Request` if the authenticated user does not have the `ADMIN` role.
+- `401 Unauthorized` if the request is not authenticated.
