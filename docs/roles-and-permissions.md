@@ -23,6 +23,7 @@ Typical responsibilities:
 - manage clinic locations and HCP-clinic assignments
 - manage schedules, appointments, and specialities
 - access both self-profile and broader administrative resources
+- create clinic locations with creator attribution (`clinic_location.created_by`)
 
 Mapped permissions:
 - `VIEW_SELF_PROFILE`

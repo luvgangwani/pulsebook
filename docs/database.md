@@ -103,6 +103,7 @@ Roles act as permission bundles and `user.role_id` remains the user's assigned p
 | suburb         | string   | yes      | no     | -          |
 | state          | string   | yes      | no     | -          |
 | postcode       | string   | no       | no     | -          |
+| created_by     | string   | yes      | no     | user.id    |
 | created_at     | datetime | no       | no     | -          |
 | updated_at     | datetime | no       | no     | -          |
 
