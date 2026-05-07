@@ -223,3 +223,88 @@ Returns all clinic locations for admin users.
 
 - `400 Bad Request` if the authenticated user does not have the `ADMIN` role.
 - `401 Unauthorized` if the request is not authenticated.
+
+## HCP Clinic Location Mapping Create
+
+### `POST /api/hcp-clinic-locations`
+
+Assigns an HCP to a clinic location.
+
+#### Access Control
+
+- Authenticated endpoint
+- Requires `ADMIN` or `CLINIC_ADMIN` role
+
+#### Request Body
+
+| Field            | Type   | Required | Notes                                |
+| ---------------- | ------ | -------- | ------------------------------------ |
+| userId           | string | yes      | References `user.id` of an HCP user. |
+| clinicLocationId | string | yes      | References `clinic_location.id`.     |
+
+#### Success Response
+
+- `201 Created`
+- Returns created HCP-clinic mapping payload:
+  - `id`
+  - `hcpId`
+  - `userId`
+  - `clinicLocationId`
+  - `createdAt`
+  - `updatedAt`
+
+#### Error Responses
+
+- `400 Bad Request` for invalid or missing fields.
+- `400 Bad Request` if authenticated user role is not allowed.
+- `401 Unauthorized` if request is not authenticated.
+- `404 Not Found` if `userId` or `clinicLocationId` does not exist.
+- `409 Conflict` if mapping already exists.
+
+## HCP Assigned Clinic Locations List
+
+### `GET /api/clinic-locations/assigned/:userId`
+
+Lists clinic locations assigned to a specific HCP.
+
+#### Access Control
+
+- Authenticated endpoint
+- Any authenticated role
+
+#### Success Response
+
+- `200 OK`
+- Returns:
+  - `hcp` object (`id`, `userId`, `firstName`, `lastName`, `email`)
+  - `clinicLocations` array (`id`, `addressLine1`, `addressLine2`, `suburb`, `state`, `postcode`, `createdBy`, `assignedAt`)
+
+#### Error Responses
+
+- `400 Bad Request` if `userId` is invalid.
+- `401 Unauthorized` if request is not authenticated.
+- `404 Not Found` if HCP does not exist.
+
+## Clinic Location Assigned HCPs List
+
+### `GET /api/hcps/assigned/:clinicLocationId`
+
+Lists HCPs assigned to a specific clinic location.
+
+#### Access Control
+
+- Authenticated endpoint
+- Any authenticated role
+
+#### Success Response
+
+- `200 OK`
+- Returns:
+  - `clinicLocation` object (`id`, `addressLine1`, `addressLine2`, `suburb`, `state`, `postcode`, `createdBy`)
+  - `hcps` array (`id`, `userId`, `firstName`, `lastName`, `email`, `specialityId`, `assignedAt`)
+
+#### Error Responses
+
+- `400 Bad Request` if `clinicLocationId` is invalid.
+- `401 Unauthorized` if request is not authenticated.
+- `404 Not Found` if clinic location does not exist.
