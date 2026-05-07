@@ -22,10 +22,10 @@ export class HcpClinicLocationsController {
     );
   }
 
-  @Get("clinic-locations/assigned/:hcpId")
+  @Get("clinic-locations/assigned/:userId")
   @UseGuards(JwtAuthGuard)
-  async getClinicLocationsAssignedToHcp(@Param("hcpId") hcpId: string) {
-    return this.hcpClinicLocationsService.getClinicLocationsAssignedToHcp(hcpId);
+  async getClinicLocationsAssignedToHcp(@Param("userId") userId: string) {
+    return this.hcpClinicLocationsService.getClinicLocationsAssignedToHcp(userId);
   }
 
   @Get("hcps/assigned/:clinicLocationId")

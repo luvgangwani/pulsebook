@@ -239,7 +239,7 @@ Assigns an HCP to a clinic location.
 
 | Field            | Type   | Required | Notes                                |
 | ---------------- | ------ | -------- | ------------------------------------ |
-| hcpId            | string | yes      | References `hcp.id`.                 |
+| userId           | string | yes      | References `user.id` of an HCP user. |
 | clinicLocationId | string | yes      | References `clinic_location.id`.     |
 
 #### Success Response
@@ -248,6 +248,7 @@ Assigns an HCP to a clinic location.
 - Returns created HCP-clinic mapping payload:
   - `id`
   - `hcpId`
+  - `userId`
   - `clinicLocationId`
   - `createdAt`
   - `updatedAt`
@@ -257,12 +258,12 @@ Assigns an HCP to a clinic location.
 - `400 Bad Request` for invalid or missing fields.
 - `400 Bad Request` if authenticated user role is not allowed.
 - `401 Unauthorized` if request is not authenticated.
-- `404 Not Found` if `hcpId` or `clinicLocationId` does not exist.
+- `404 Not Found` if `userId` or `clinicLocationId` does not exist.
 - `409 Conflict` if mapping already exists.
 
 ## HCP Assigned Clinic Locations List
 
-### `GET /api/clinic-locations/assigned/:hcpId`
+### `GET /api/clinic-locations/assigned/:userId`
 
 Lists clinic locations assigned to a specific HCP.
 
@@ -280,7 +281,7 @@ Lists clinic locations assigned to a specific HCP.
 
 #### Error Responses
 
-- `400 Bad Request` if `hcpId` is invalid.
+- `400 Bad Request` if `userId` is invalid.
 - `401 Unauthorized` if request is not authenticated.
 - `404 Not Found` if HCP does not exist.
 

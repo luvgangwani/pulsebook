@@ -15,17 +15,29 @@ export class HcpClinicLocationsService {
   async createHcpClinicLocation(
     createHcpClinicLocationDto: CreateHcpClinicLocationDto,
   ) {
-    const [hcp, clinicLocation] = await Promise.all([
+    const [user, hcp, clinicLocation] = await Promise.all([
+      this.prisma.user.findUnique({
+        where: { id: createHcpClinicLocationDto.userId },
+        include: { role: true },
+      }),
       this.prisma.hcp.findUnique({
-        where: { userId: createHcpClinicLocationDto.hcpId },
+        where: { userId: createHcpClinicLocationDto.userId },
       }),
       this.prisma.clinicLocation.findUnique({
         where: { id: createHcpClinicLocationDto.clinicLocationId },
       }),
     ]);
 
+    if (!user) {
+      throw new NotFoundException("User was not found.");
+    }
+
+    if (user.role.name !== "HCP") {
+      throw new BadRequestException("User is not an HCP.");
+    }
+
     if (!hcp) {
-      throw new NotFoundException("HCP was not found.");
+      throw new NotFoundException("HCP profile was not found for this user.");
     }
 
     if (!clinicLocation) {
@@ -35,7 +47,7 @@ export class HcpClinicLocationsService {
     try {
       const mapping = await this.prisma.hcpClinicLocation.create({
         data: {
-          hcpId: createHcpClinicLocationDto.hcpId,
+          hcpId: hcp.id,
           clinicLocationId: createHcpClinicLocationDto.clinicLocationId,
         },
       });
@@ -43,6 +55,7 @@ export class HcpClinicLocationsService {
       return {
         id: mapping.id,
         hcpId: mapping.hcpId,
+        userId: hcp.userId,
         clinicLocationId: mapping.clinicLocationId,
         createdAt: mapping.createdAt.toISOString(),
         updatedAt: mapping.updatedAt.toISOString(),
@@ -61,15 +74,28 @@ export class HcpClinicLocationsService {
     }
   }
 
-  async getClinicLocationsAssignedToHcp(hcpId: string) {
-    const normalizedHcpId = hcpId.trim();
+  async getClinicLocationsAssignedToHcp(userId: string) {
+    const normalizedUserId = userId.trim();
 
-    if (normalizedHcpId.length === 0) {
-      throw new BadRequestException("hcpId is required.");
+    if (normalizedUserId.length === 0) {
+      throw new BadRequestException("userId is required.");
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: normalizedUserId },
+      include: { role: true },
+    });
+
+    if (!user) {
+      throw new NotFoundException("User was not found.");
+    }
+
+    if (user.role.name !== "HCP") {
+      throw new BadRequestException("User is not an HCP.");
     }
 
     const hcp = await this.prisma.hcp.findUnique({
-      where: { userId: normalizedHcpId },
+      where: { userId: normalizedUserId },
       include: {
         user: true,
         clinicLocations: {
@@ -84,7 +110,7 @@ export class HcpClinicLocationsService {
     });
 
     if (!hcp) {
-      throw new NotFoundException("HCP was not found.");
+      throw new NotFoundException("HCP profile was not found for this user.");
     }
 
     return {
