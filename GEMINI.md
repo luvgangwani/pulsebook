@@ -4,6 +4,15 @@
 
 Pulsebook is a healthcare appointment booking platform. It is structured as a TypeScript monorepo using `pnpm` workspaces.
 
+### Terminology
+
+Users - Any user with an account on the application
+Role - A user can be one of patient/healthcare professional (hcp)
+Patient - The user who makes an application for an appointment
+HCP - The user who receives and takes action on the application for appointment
+Slot - A default 15 minute timeslot within the schedule (day/days in a week) specified by the HCP
+Appointment - The actual action where a patient books a timeslot with an HCP
+
 ### Architecture
 
 - **apps/api**: NestJS backend application.
@@ -103,3 +112,9 @@ Prefer small modules with explicit exports. Keep Next route files inside `src/ap
 - `docs/database.md`: Detailed entity definitions and relationships.
 - `docs/api-endpoints.md`: List of available API endpoints.
 - `docs/roles-and-permissions.md`: Details on the RBAC system.
+
+| Documentation         | Path                            |
+| --------------------- | ------------------------------- |
+| Database              | ./docs/database.md              |
+| API Endpoints         | ./docs/api-endpoints.md         |
+| Roles and permissions | ./docs/roles-and-permissions.md |

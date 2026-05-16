@@ -15,8 +15,11 @@ Appointment - The actual action where a patient books a timeslot with an HCP
 
 For more information refer the below table:
 
-| Database | docs/database.md |
-| -------- | ---------------- |
+| Documentation         | Path                            |
+| --------------------- | ------------------------------- |
+| Database              | ./docs/database.md              |
+| API Endpoints         | ./docs/api-endpoints.md         |
+| Roles and permissions | ./docs/roles-and-permissions.md |
 
 ## Project Structure & Module Organization
 
