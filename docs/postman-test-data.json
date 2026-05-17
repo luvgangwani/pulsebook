@@ -117,14 +117,14 @@
       "scenario": "Superman (Kryptonian Medicine)",
       "url": "POST /api/users/register/hcp",
       "body": {
-        "specialityId": "REPLACE_WITH_SPECIALITY_ID"
+        "specialityId": "5234e109-e58a-4e2a-82ba-86262eaa330e"
       }
     },
     {
       "scenario": "Wonder Woman (Ancient Healing)",
       "url": "POST /api/users/register/hcp",
       "body": {
-        "specialityId": "REPLACE_WITH_SPECIALITY_ID"
+        "specialityId": "0946685f-f16b-4e0a-be10-1fa346e4316b"
       }
     }
   ],
