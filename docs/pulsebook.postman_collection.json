@@ -1,0 +1,456 @@
+{
+	"info": {
+		"_postman_id": "b7c2a7f1-8422-4876-8805-4c04f98292c4",
+		"name": "Pulsebook API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register Admin (Bruce Wayne)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Bruce\",\n  \"lastName\": \"Wayne\",\n  \"email\": \"bruce.wayne@waynetech.com\",\n  \"password\": \"I-Am-Batman-123\",\n  \"roleId\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register HCP (Clark Kent)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Clark\",\n  \"lastName\": \"Kent\",\n  \"email\": \"clark.kent@dailyplanet.com\",\n  \"password\": \"Super-Secret-123\",\n  \"roleId\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Patient (Barry Allen)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Barry\",\n  \"lastName\": \"Allen\",\n  \"email\": \"barry.allen@ccpd.gov\",\n  \"password\": \"Fastest-Man-Alive-123\",\n  \"roleId\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Clinic Admin (Lois Lane)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Lois\",\n  \"lastName\": \"Lane\",\n  \"email\": \"lois.lane@dailyplanet.com\",\n  \"password\": \"Journalist-Extraordinaire-123\",\n  \"roleId\": 4\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Admin (Bruce Wayne)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"bruce.wayne@waynetech.com\",\n  \"password\": \"I-Am-Batman-123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login HCP (Clark Kent)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"clark.kent@dailyplanet.com\",\n  \"password\": \"Super-Secret-123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Patient (Barry Allen)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"barry.allen@ccpd.gov\",\n  \"password\": \"Fastest-Man-Alive-123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Clinic Admin (Lois Lane)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"lois.lane@dailyplanet.com\",\n  \"password\": \"Journalist-Extraordinaire-123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Profiles",
+			"item": [
+				{
+					"name": "Register Patient Profile (Step 2)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"postcode\": \"64101\",\n  \"addressLine1\": \"Central City PD\",\n  \"suburb\": \"Central City\",\n  \"state\": \"MO\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/register/patient",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"register",
+								"patient"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register HCP Profile (Step 2)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"specialityId\": \"{{specialityId}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/register/hcp",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"register",
+								"hcp"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Clinics",
+			"item": [
+				{
+					"name": "Create Clinic Location",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"addressLine1\": \"Daily Planet Building\",\n  \"suburb\": \"Metropolis\",\n  \"state\": \"NY\",\n  \"postcode\": \"10001\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clinic-locations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clinic-locations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List All Clinic Locations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/clinic-locations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clinic-locations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Mappings & Schedules",
+			"item": [
+				{
+					"name": "Map HCP to Clinic",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"hcpId\": \"{{hcpId}}\",\n  \"clinicLocationId\": \"{{clinicLocationId}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/hcp-clinic-locations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"hcp-clinic-locations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Clinics Assigned to HCP",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/clinic-locations/assigned/{{hcpId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clinic-locations",
+								"assigned",
+								"{{hcpId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get HCPs Assigned to Clinic",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/hcps/assigned/{{clinicLocationId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"hcps",
+								"assigned",
+								"{{clinicLocationId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create HCP Schedule",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"hcpId\": \"{{hcpId}}\",\n  \"clinicLocationId\": \"{{clinicLocationId}}\",\n  \"availableDays\": [\"MONDAY\", \"WEDNESDAY\", \"FRIDAY\"],\n  \"slotDuration\": 15\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/hcp-schedules",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"hcp-schedules"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3001/api",
+			"type": "string"
+		},
+		{
+			"key": "specialityId",
+			"value": "REPLACE_ME",
+			"type": "string"
+		},
+		{
+			"key": "hcpId",
+			"value": "REPLACE_ME",
+			"type": "string"
+		},
+		{
+			"key": "clinicLocationId",
+			"value": "REPLACE_ME",
+			"type": "string"
+		}
+	]
+}
