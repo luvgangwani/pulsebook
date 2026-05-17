@@ -1,0 +1,175 @@
+{
+  "UserRegistration": [
+    {
+      "scenario": "Admin User (Bruce Wayne)",
+      "url": "POST /api/users/register",
+      "body": {
+        "firstName": "Bruce",
+        "lastName": "Wayne",
+        "email": "bruce.wayne@waynetech.com",
+        "password": "I-Am-Batman-123",
+        "roleId": 1
+      }
+    },
+    {
+      "scenario": "HCP User (Clark Kent)",
+      "url": "POST /api/users/register",
+      "body": {
+        "firstName": "Clark",
+        "lastName": "Kent",
+        "email": "clark.kent@dailyplanet.com",
+        "password": "Super-Secret-123",
+        "roleId": 3
+      }
+    },
+    {
+      "scenario": "HCP User (Diana Prince)",
+      "url": "POST /api/users/register",
+      "body": {
+        "firstName": "Diana",
+        "lastName": "Prince",
+        "email": "diana.prince@themyscira.gov",
+        "password": "Lasso-Of-Truth-123",
+        "roleId": 3
+      }
+    },
+    {
+      "scenario": "Patient User (Barry Allen)",
+      "url": "POST /api/users/register",
+      "body": {
+        "firstName": "Barry",
+        "lastName": "Allen",
+        "email": "barry.allen@ccpd.gov",
+        "password": "Fastest-Man-Alive-123",
+        "roleId": 2
+      }
+    },
+    {
+      "scenario": "Clinic Admin User (Lois Lane)",
+      "url": "POST /api/users/register",
+      "body": {
+        "firstName": "Lois",
+        "lastName": "Lane",
+        "email": "lois.lane@dailyplanet.com",
+        "password": "Journalist-Extraordinaire-123",
+        "roleId": 4
+      }
+    }
+  ],
+  "UserLogin": [
+    {
+      "scenario": "Admin Login (Bruce Wayne)",
+      "url": "POST /api/users/login",
+      "body": {
+        "email": "bruce.wayne@waynetech.com",
+        "password": "I-Am-Batman-123"
+      }
+    },
+    {
+      "scenario": "HCP Login (Clark Kent)",
+      "url": "POST /api/users/login",
+      "body": {
+        "email": "clark.kent@dailyplanet.com",
+        "password": "Super-Secret-123"
+      }
+    },
+    {
+      "scenario": "Patient Login (Barry Allen)",
+      "url": "POST /api/users/login",
+      "body": {
+        "email": "barry.allen@ccpd.gov",
+        "password": "Fastest-Man-Alive-123"
+      }
+    },
+    {
+      "scenario": "Clinic Admin Login (Lois Lane)",
+      "url": "POST /api/users/login",
+      "body": {
+        "email": "lois.lane@dailyplanet.com",
+        "password": "Journalist-Extraordinaire-123"
+      }
+    }
+  ],
+  "PatientRegistration": [
+    {
+      "scenario": "The Flash Profile",
+      "url": "POST /api/users/register/patient",
+      "body": {
+        "postcode": "64101",
+        "addressLine1": "Central City PD",
+        "suburb": "Central City",
+        "state": "MO"
+      }
+    },
+    {
+      "scenario": "Aquaman Profile",
+      "url": "POST /api/users/register/patient",
+      "body": {
+        "postcode": "00000",
+        "addressLine1": "Atlantis Palace",
+        "suburb": "Atlantis",
+        "state": "OC"
+      }
+    }
+  ],
+  "HcpRegistration": [
+    {
+      "scenario": "Superman (Kryptonian Medicine)",
+      "url": "POST /api/users/register/hcp",
+      "body": {
+        "specialityId": 1
+      }
+    },
+    {
+      "scenario": "Wonder Woman (Ancient Healing)",
+      "url": "POST /api/users/register/hcp",
+      "body": {
+        "specialityId": 2
+      }
+    }
+  ],
+  "ClinicLocationCreate": [
+    {
+      "scenario": "Daily Planet Clinic",
+      "url": "POST /api/clinic-locations",
+      "body": {
+        "addressLine1": "Daily Planet Building",
+        "suburb": "Metropolis",
+        "state": "NY",
+        "postcode": "10001"
+      }
+    },
+    {
+      "scenario": "Wayne Manor Clinic",
+      "url": "POST /api/clinic-locations",
+      "body": {
+        "addressLine1": "Wayne Manor",
+        "suburb": "Gotham",
+        "state": "NJ",
+        "postcode": "07001"
+      }
+    }
+  ],
+  "HcpClinicMappingCreate": [
+    {
+      "scenario": "Map Superman to Metropolis",
+      "url": "POST /api/hcp-clinic-locations",
+      "body": {
+        "hcpId": "REPLACE_WITH_CLARK_KENT_HCP_ID",
+        "clinicLocationId": "REPLACE_WITH_METROPOLIS_CLINIC_ID"
+      }
+    }
+  ],
+  "HcpScheduleCreate": [
+    {
+      "scenario": "Superman Metropolis Schedule",
+      "url": "POST /api/hcp-schedules",
+      "body": {
+        "hcpId": "REPLACE_WITH_CLARK_KENT_HCP_ID",
+        "clinicLocationId": "REPLACE_WITH_METROPOLIS_CLINIC_ID",
+        "availableDays": ["MONDAY", "WEDNESDAY", "FRIDAY"],
+        "slotDuration": 15
+      }
+    }
+  ]
+}

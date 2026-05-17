@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { ClinicLocationsModule } from "./clinic-locations/clinic-locations.module";
 import { HealthModule } from "./health/health.module";
 import { HcpClinicLocationsModule } from "./hcp-clinic-locations/hcp-clinic-locations.module";
+import { HcpSchedulesModule } from "./hcp-schedules/hcp-schedules.module";
 import { UsersModule } from "./users/users.module";
 
 @Module({
@@ -10,6 +11,7 @@ import { UsersModule } from "./users/users.module";
     UsersModule,
     ClinicLocationsModule,
     HcpClinicLocationsModule,
+    HcpSchedulesModule,
   ],
 })
 export class AppModule {}

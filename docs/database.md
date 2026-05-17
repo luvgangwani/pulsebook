@@ -127,6 +127,7 @@ Roles act as permission bundles and `user.role_id` remains the user's assigned p
 | hcp_clinic_location_id | string        | no       | yes    | hcp_clinic_location.id  |
 | available_days         | day_of_week[] | no       | no     | -                       |
 | slot_duration          | integer       | no       | no     | -                       |
+| created_by             | string        | yes      | no     | user.id                 |
 | created_at             | datetime      | no       | no     | -                       |
 | updated_at             | datetime      | no       | no     | -                       |
 
@@ -175,7 +176,7 @@ Only one active appointment request per slot should be allowed at a time.
 
 | Field      | Type     | Nullable | Unique | References |
 | ---------- | -------- | -------- | ------ | ---------- |
-| id         | string   | no       | yes    | -          |
+| id         | integer  | no       | yes    | -          |
 | name       | string   | no       | no     | -          |
 | created_at | datetime | no       | no     | -          |
 | updated_at | datetime | no       | no     | -          |

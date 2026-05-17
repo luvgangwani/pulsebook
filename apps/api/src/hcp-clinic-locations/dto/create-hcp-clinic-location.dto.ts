@@ -8,7 +8,7 @@ export class CreateHcpClinicLocationDto {
   @Transform(trimString)
   @IsString()
   @IsNotEmpty()
-  userId!: string;
+  hcpId!: string;
 
   @Transform(trimString)
   @IsString()

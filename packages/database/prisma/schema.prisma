@@ -38,6 +38,7 @@ model User {
   patient Patient?
   hcp     Hcp?
   createdClinicLocations ClinicLocation[] @relation("ClinicLocationCreator")
+  createdHcpSchedules    HcpSchedule[]    @relation("HcpScheduleCreator")
 
   @@map("user")
 }
@@ -87,7 +88,7 @@ model Patient {
   suburb                String?
   state                 String?
   postcode              String
-  preferredSpecialityId String?  @map("preferred_speciality_id")
+  preferredSpecialityId Int?     @map("preferred_speciality_id")
   createdAt             DateTime @default(now()) @map("created_at")
   updatedAt             DateTime @updatedAt @map("updated_at")
 
@@ -101,7 +102,7 @@ model Patient {
 model Hcp {
   id            String   @id @default(cuid())
   userId        String   @unique @map("user_id")
-  specialityId  String   @map("speciality_id")
+  specialityId  Int      @map("speciality_id")
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
@@ -149,10 +150,12 @@ model HcpSchedule {
   hcpClinicLocationId String      @unique @map("hcp_clinic_location_id")
   availableDays       DayOfWeek[] @map("available_days")
   slotDuration        Int         @map("slot_duration")
+  createdBy           String?     @map("created_by")
   createdAt           DateTime    @default(now()) @map("created_at")
   updatedAt           DateTime    @updatedAt @map("updated_at")
 
   hcpClinicLocation HcpClinicLocation @relation(fields: [hcpClinicLocationId], references: [id])
+  createdByUser     User?             @relation("HcpScheduleCreator", fields: [createdBy], references: [id])
   slots             Slot[]
 
   @@map("hcp_schedule")
@@ -188,8 +191,8 @@ model Appointment {
 }
 
 model Speciality {
-  id        String   @id @default(cuid())
-  name      String
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

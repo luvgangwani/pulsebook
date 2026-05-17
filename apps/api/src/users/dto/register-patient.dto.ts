@@ -1,5 +1,5 @@
 import { Transform } from "class-transformer";
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsInt, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { trimOptionalString, trimString } from "./user-dto.transforms";
 
 export class RegisterPatientDto {
@@ -28,8 +28,7 @@ export class RegisterPatientDto {
   @IsNotEmpty()
   postcode!: string;
 
-  @Transform(trimOptionalString)
   @IsOptional()
-  @IsString()
-  preferredSpecialityId?: string;
+  @IsInt()
+  preferredSpecialityId?: number;
 }

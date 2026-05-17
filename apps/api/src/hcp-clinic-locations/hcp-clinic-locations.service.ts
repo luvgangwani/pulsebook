@@ -15,29 +15,17 @@ export class HcpClinicLocationsService {
   async createHcpClinicLocation(
     createHcpClinicLocationDto: CreateHcpClinicLocationDto,
   ) {
-    const [user, hcp, clinicLocation] = await Promise.all([
-      this.prisma.user.findUnique({
-        where: { id: createHcpClinicLocationDto.userId },
-        include: { role: true },
-      }),
+    const [hcp, clinicLocation] = await Promise.all([
       this.prisma.hcp.findUnique({
-        where: { userId: createHcpClinicLocationDto.userId },
+        where: { id: createHcpClinicLocationDto.hcpId },
       }),
       this.prisma.clinicLocation.findUnique({
         where: { id: createHcpClinicLocationDto.clinicLocationId },
       }),
     ]);
 
-    if (!user) {
-      throw new NotFoundException("User was not found.");
-    }
-
-    if (user.role.name !== "HCP") {
-      throw new BadRequestException("User is not an HCP.");
-    }
-
     if (!hcp) {
-      throw new NotFoundException("HCP profile was not found for this user.");
+      throw new NotFoundException("HCP profile was not found.");
     }
 
     if (!clinicLocation) {
@@ -74,28 +62,15 @@ export class HcpClinicLocationsService {
     }
   }
 
-  async getClinicLocationsAssignedToHcp(userId: string) {
-    const normalizedUserId = userId.trim();
+  async getClinicLocationsAssignedToHcp(hcpId: string) {
+    const normalizedHcpId = hcpId.trim();
 
-    if (normalizedUserId.length === 0) {
-      throw new BadRequestException("userId is required.");
-    }
-
-    const user = await this.prisma.user.findUnique({
-      where: { id: normalizedUserId },
-      include: { role: true },
-    });
-
-    if (!user) {
-      throw new NotFoundException("User was not found.");
-    }
-
-    if (user.role.name !== "HCP") {
-      throw new BadRequestException("User is not an HCP.");
+    if (normalizedHcpId.length === 0) {
+      throw new BadRequestException("hcpId is required.");
     }
 
     const hcp = await this.prisma.hcp.findUnique({
-      where: { userId: normalizedUserId },
+      where: { id: normalizedHcpId },
       include: {
         user: true,
         clinicLocations: {
@@ -110,7 +85,7 @@ export class HcpClinicLocationsService {
     });
 
     if (!hcp) {
-      throw new NotFoundException("HCP profile was not found for this user.");
+      throw new NotFoundException("HCP profile was not found.");
     }
 
     return {

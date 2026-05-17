@@ -106,7 +106,7 @@ Additional patient fields:
 | addressLine2         | string  | no       | Patient address line 2.     |
 | suburb               | string  | no       | Patient suburb.             |
 | state                | string  | no       | Patient state.              |
-| preferredSpecialityId | string | no       | References `speciality.id`. |
+| preferredSpecialityId | integer| no       | References `speciality.id`. |
 
 #### Success Response
 
@@ -138,7 +138,7 @@ Additional HCP fields:
 
 | Field        | Type   | Required | Notes                       |
 | ------------ | ------ | -------- | --------------------------- |
-| specialityId | string | yes      | References `speciality.id`. |
+| specialityId | integer| yes      | References `speciality.id`. |
 
 #### Success Response
 
@@ -237,10 +237,10 @@ Assigns an HCP to a clinic location.
 
 #### Request Body
 
-| Field            | Type   | Required | Notes                                |
-| ---------------- | ------ | -------- | ------------------------------------ |
-| userId           | string | yes      | References `user.id` of an HCP user. |
-| clinicLocationId | string | yes      | References `clinic_location.id`.     |
+| Field            | Type   | Required | Notes                            |
+| ---------------- | ------ | -------- | -------------------------------- |
+| hcpId            | string | yes      | References `hcp.id`.             |
+| clinicLocationId | string | yes      | References `clinic_location.id`. |
 
 #### Success Response
 
@@ -258,12 +258,12 @@ Assigns an HCP to a clinic location.
 - `400 Bad Request` for invalid or missing fields.
 - `400 Bad Request` if authenticated user role is not allowed.
 - `401 Unauthorized` if request is not authenticated.
-- `404 Not Found` if `userId` or `clinicLocationId` does not exist.
+- `404 Not Found` if `hcpId` or `clinicLocationId` does not exist.
 - `409 Conflict` if mapping already exists.
 
 ## HCP Assigned Clinic Locations List
 
-### `GET /api/clinic-locations/assigned/:userId`
+### `GET /api/clinic-locations/assigned/:hcpId`
 
 Lists clinic locations assigned to a specific HCP.
 
@@ -281,7 +281,7 @@ Lists clinic locations assigned to a specific HCP.
 
 #### Error Responses
 
-- `400 Bad Request` if `userId` is invalid.
+- `400 Bad Request` if `hcpId` is invalid.
 - `401 Unauthorized` if request is not authenticated.
 - `404 Not Found` if HCP does not exist.
 
@@ -308,3 +308,42 @@ Lists HCPs assigned to a specific clinic location.
 - `400 Bad Request` if `clinicLocationId` is invalid.
 - `401 Unauthorized` if request is not authenticated.
 - `404 Not Found` if clinic location does not exist.
+
+## HCP Schedule Create
+
+### `POST /api/hcp-schedules`
+
+Creates a new schedule for an HCP at a specific clinic location.
+
+#### Access Control
+
+- Authenticated endpoint
+- Requires `ADMIN`, `CLINIC_ADMIN`, or `HCP` role
+
+#### Request Body
+
+| Field               | Type   | Required | Notes                                          |
+| ------------------- | ------ | -------- | ---------------------------------------------- |
+| hcpId               | string | yes      | References `hcp.id`.                           |
+| clinicLocationId    | string | yes      | References `clinic_location.id`.               |
+| availableDays       | array  | yes      | Array of `DayOfWeek` strings (e.g., "MONDAY"). |
+| slotDuration        | integer| yes      | Duration in minutes (min 1).                   |
+
+#### Success Response
+
+- `201 Created`
+- Returns created HCP schedule payload:
+  - `id`
+  - `hcpClinicLocationId`
+  - `availableDays`
+  - `slotDuration`
+  - `createdBy`
+  - `createdAt`
+  - `updatedAt`
+
+#### Error Responses
+
+- `400 Bad Request` for invalid or missing fields.
+- `401 Unauthorized` if request is not authenticated.
+- `404 Not Found` if `hcpClinicLocationId` does not exist.
+- `409 Conflict` if a schedule already exists for this mapping.
