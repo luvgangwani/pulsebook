@@ -106,7 +106,7 @@ Additional patient fields:
 | addressLine2         | string  | no       | Patient address line 2.     |
 | suburb               | string  | no       | Patient suburb.             |
 | state                | string  | no       | Patient state.              |
-| preferredSpecialityId | string | no       | References `speciality.id`. |
+| preferredSpecialityId | integer| no       | References `speciality.id`. |
 
 #### Success Response
 
@@ -138,7 +138,7 @@ Additional HCP fields:
 
 | Field        | Type   | Required | Notes                       |
 | ------------ | ------ | -------- | --------------------------- |
-| specialityId | string | yes      | References `speciality.id`. |
+| specialityId | integer| yes      | References `speciality.id`. |
 
 #### Success Response
 

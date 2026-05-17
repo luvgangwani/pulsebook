@@ -176,7 +176,7 @@ Only one active appointment request per slot should be allowed at a time.
 
 | Field      | Type     | Nullable | Unique | References |
 | ---------- | -------- | -------- | ------ | ---------- |
-| id         | string   | no       | yes    | -          |
+| id         | integer  | no       | yes    | -          |
 | name       | string   | no       | no     | -          |
 | created_at | datetime | no       | no     | -          |
 | updated_at | datetime | no       | no     | -          |

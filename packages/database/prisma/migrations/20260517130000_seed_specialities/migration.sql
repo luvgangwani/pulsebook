@@ -1,0 +1,10 @@
+-- Seed specialities
+INSERT INTO "speciality" ("name", "created_at", "updated_at")
+VALUES
+  ('General Practice', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  ('Cardiology', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  ('Pediatrics', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  ('Dermatology', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  ('Psychiatry', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  ('Orthopedics', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+ON CONFLICT ("name") DO NOTHING;

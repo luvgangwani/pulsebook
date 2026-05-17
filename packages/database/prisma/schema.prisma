@@ -88,7 +88,7 @@ model Patient {
   suburb                String?
   state                 String?
   postcode              String
-  preferredSpecialityId String?  @map("preferred_speciality_id") @db.Uuid
+  preferredSpecialityId Int?     @map("preferred_speciality_id")
   createdAt             DateTime @default(now()) @map("created_at")
   updatedAt             DateTime @updatedAt @map("updated_at")
 
@@ -102,7 +102,7 @@ model Patient {
 model Hcp {
   id            String   @id @default(cuid())
   userId        String   @unique @map("user_id")
-  specialityId  String   @map("speciality_id") @db.Uuid
+  specialityId  Int      @map("speciality_id")
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
@@ -191,8 +191,8 @@ model Appointment {
 }
 
 model Speciality {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name      String
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

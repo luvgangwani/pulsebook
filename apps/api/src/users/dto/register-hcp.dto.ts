@@ -1,10 +1,7 @@
-import { Transform } from "class-transformer";
-import { IsNotEmpty, IsString } from "class-validator";
-import { trimString } from "./user-dto.transforms";
+import { IsInt, IsNotEmpty } from "class-validator";
 
 export class RegisterHcpDto {
-  @Transform(trimString)
-  @IsString()
+  @IsInt()
   @IsNotEmpty()
-  specialityId!: string;
+  specialityId!: number;
 }

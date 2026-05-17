@@ -264,7 +264,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"specialityId\": \"{{specialityId}}\"\n}",
+							"raw": "{\n  \"specialityId\": {{specialityId}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -439,7 +439,7 @@
 		},
 		{
 			"key": "specialityId",
-			"value": "5234e109-e58a-4e2a-82ba-86262eaa330e",
+			"value": "1",
 			"type": "string"
 		},
 		{
