@@ -86,11 +86,13 @@ Appointment - The actual action where a patient books a timeslot with an HCP
 - The project includes skills for branch management and PR creation (`.codex/skills`).
 - PR reviews were considered but are currently disabled to save tokens.
 - **Co-authorship**: When Google Gemini makes code changes, it should be added as a co-author (e.g., in commit message trailers as `Co-authored-by: Google Gemini <gemini@google.com>`).
-- PRs should include:
+- **PRs should include**:
   - a brief summary of the change
   - any setup or migration steps
   - linked issue or task reference when applicable
   - screenshots for visible frontend changes
+- **Post-PR Commit Rule**: After each commit added to an existing PR, first evaluate if the change warrants a PR description update (e.g., new features, schema changes, DTO updates). If an update is necessary, propose the revised description to the user and apply it via \`gh pr edit\` only after receiving explicit confirmation.
+
 
 ### Coding Style & Naming Conventions
 

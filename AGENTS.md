@@ -82,12 +82,12 @@ The current history uses short, imperative commit messages, for example: `Initia
 When Codex contributes code or docs, include a co-author trailer on the commit:
 `Co-authored-by: Codex <codex@openai.com>`.
 
-PRs should include:
-
-- a brief summary of the change
-- any setup or migration steps
-- linked issue or task reference when applicable
-- screenshots for visible frontend changes
+- **PRs should include**:
+  - a brief summary of the change
+  - any setup or migration steps
+  - linked issue or task reference when applicable
+  - screenshots for visible frontend changes
+- **Post-PR Commit Rule**: After each commit added to an existing PR, first evaluate if the change warrants a PR description update (e.g., new features, schema changes, DTO updates). If an update is necessary, propose the revised description to the user and apply it via \`gh pr edit\` only after receiving explicit confirmation.
 
 ## Security & Configuration Tips
 
