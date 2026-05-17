@@ -7,3 +7,5 @@ dist
 .env.local
 coverage
 generated
+docs/pulsebook.postman_collection.json
+docs/postman-test-data.json
