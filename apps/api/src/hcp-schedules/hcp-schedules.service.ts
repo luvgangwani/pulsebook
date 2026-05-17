@@ -12,7 +12,10 @@ import { CreateHcpScheduleDto } from "./dto/create-hcp-schedule.dto";
 export class HcpSchedulesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createHcpSchedule(createHcpScheduleDto: CreateHcpScheduleDto) {
+  async createHcpSchedule(
+    createHcpScheduleDto: CreateHcpScheduleDto,
+    userId: string,
+  ) {
     const hcpClinicLocation = await this.prisma.hcpClinicLocation.findUnique({
       where: {
         hcpId_clinicLocationId: {
@@ -32,6 +35,7 @@ export class HcpSchedulesService {
           hcpClinicLocationId: hcpClinicLocation.id,
           availableDays: createHcpScheduleDto.availableDays,
           slotDuration: createHcpScheduleDto.slotDuration,
+          createdBy: userId,
         },
       });
 
@@ -40,6 +44,7 @@ export class HcpSchedulesService {
         hcpClinicLocationId: schedule.hcpClinicLocationId,
         availableDays: schedule.availableDays,
         slotDuration: schedule.slotDuration,
+        createdBy: schedule.createdBy,
         createdAt: schedule.createdAt.toISOString(),
         updatedAt: schedule.updatedAt.toISOString(),
       };

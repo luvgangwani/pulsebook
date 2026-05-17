@@ -337,6 +337,7 @@ Creates a new schedule for an HCP at a specific clinic location.
   - `hcpClinicLocationId`
   - `availableDays`
   - `slotDuration`
+  - `createdBy`
   - `createdAt`
   - `updatedAt`
 

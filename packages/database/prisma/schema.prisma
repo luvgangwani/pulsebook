@@ -38,6 +38,7 @@ model User {
   patient Patient?
   hcp     Hcp?
   createdClinicLocations ClinicLocation[] @relation("ClinicLocationCreator")
+  createdHcpSchedules    HcpSchedule[]    @relation("HcpScheduleCreator")
 
   @@map("user")
 }
@@ -149,10 +150,12 @@ model HcpSchedule {
   hcpClinicLocationId String      @unique @map("hcp_clinic_location_id")
   availableDays       DayOfWeek[] @map("available_days")
   slotDuration        Int         @map("slot_duration")
+  createdBy           String?     @map("created_by")
   createdAt           DateTime    @default(now()) @map("created_at")
   updatedAt           DateTime    @updatedAt @map("updated_at")
 
   hcpClinicLocation HcpClinicLocation @relation(fields: [hcpClinicLocationId], references: [id])
+  createdByUser     User?             @relation("HcpScheduleCreator", fields: [createdBy], references: [id])
   slots             Slot[]
 
   @@map("hcp_schedule")
