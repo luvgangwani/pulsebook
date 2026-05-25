@@ -33,17 +33,15 @@ export class SlotsService {
     const slotDate = new Date(date);
     slotDate.setHours(0, 0, 0, 0);
 
-    // 1. Delete unappointed slots for this schedule and day
+    // 1. Delete slots for this schedule and day that have NO appointments
+    // Slots with historical (REJECTED) appointments cannot be deleted due to FK constraints.
+    // They will be skipped during the creation phase.
     await this.prisma.slot.deleteMany({
       where: {
         hcpScheduleId: schedule.id,
         slotDate: slotDate,
         appointments: {
-          none: {
-            status: {
-              in: ["PENDING", "ACCEPTED"],
-            },
-          },
+          none: {},
         },
       },
     });
