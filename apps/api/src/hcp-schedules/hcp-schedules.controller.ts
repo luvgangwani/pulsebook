@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { AllowedRoles } from "../users/allowed-roles.decorator";
 import { CurrentUser } from "../users/current-user.decorator";
 import { AuthenticatedUser } from "../users/jwt-auth.guard";
@@ -21,6 +21,24 @@ export class HcpSchedulesController {
     return this.hcpSchedulesService.createHcpSchedule(
       createHcpScheduleDto,
       user.sub,
+    );
+  }
+
+  @Get("hcp/:hcpId")
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @AllowedRoles("ADMIN", "HCP")
+  async getSchedulesByHcpId(@Param("hcpId") hcpId: string) {
+    return this.hcpSchedulesService.getSchedulesByHcpId(hcpId);
+  }
+
+  @Get("clinic-location/:clinicLocationId")
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @AllowedRoles("ADMIN", "CLINIC_ADMIN")
+  async getSchedulesByClinicLocationId(
+    @Param("clinicLocationId") clinicLocationId: string,
+  ) {
+    return this.hcpSchedulesService.getSchedulesByClinicLocationId(
+      clinicLocationId,
     );
   }
 }

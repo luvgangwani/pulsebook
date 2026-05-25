@@ -427,6 +427,44 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get Schedules by HCP ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/hcp-schedules/hcp/{{hcpId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"hcp-schedules",
+								"hcp",
+								"{{hcpId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Schedules by Clinic Location ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/hcp-schedules/clinic-location/{{clinicLocationId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"hcp-schedules",
+								"clinic-location",
+								"{{clinicLocationId}}"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}

@@ -61,4 +61,85 @@ export class HcpSchedulesService {
       throw error;
     }
   }
+
+  async getSchedulesByHcpId(hcpId: string) {
+    if (!hcpId || hcpId.trim() === "") {
+      throw new BadRequestException("hcpId is required.");
+    }
+
+    const schedules = await this.prisma.hcpSchedule.findMany({
+      where: {
+        hcpClinicLocation: {
+          hcpId,
+        },
+      },
+      include: {
+        hcpClinicLocation: {
+          include: {
+            clinicLocation: true,
+          },
+        },
+      },
+    });
+
+    return schedules.map((schedule) => ({
+      id: schedule.id,
+      hcpClinicLocationId: schedule.hcpClinicLocationId,
+      clinicLocation: {
+        id: schedule.hcpClinicLocation.clinicLocation.id,
+        addressLine1: schedule.hcpClinicLocation.clinicLocation.addressLine1,
+        addressLine2: schedule.hcpClinicLocation.clinicLocation.addressLine2,
+        suburb: schedule.hcpClinicLocation.clinicLocation.suburb,
+        state: schedule.hcpClinicLocation.clinicLocation.state,
+        postcode: schedule.hcpClinicLocation.clinicLocation.postcode,
+      },
+      availableDays: schedule.availableDays,
+      slotDuration: schedule.slotDuration,
+      createdBy: schedule.createdBy,
+      createdAt: schedule.createdAt.toISOString(),
+      updatedAt: schedule.updatedAt.toISOString(),
+    }));
+  }
+
+  async getSchedulesByClinicLocationId(clinicLocationId: string) {
+    if (!clinicLocationId || clinicLocationId.trim() === "") {
+      throw new BadRequestException("clinicLocationId is required.");
+    }
+
+    const schedules = await this.prisma.hcpSchedule.findMany({
+      where: {
+        hcpClinicLocation: {
+          clinicLocationId,
+        },
+      },
+      include: {
+        hcpClinicLocation: {
+          include: {
+            hcp: {
+              include: {
+                user: true,
+                speciality: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return schedules.map((schedule) => ({
+      id: schedule.id,
+      hcpClinicLocationId: schedule.hcpClinicLocationId,
+      hcp: {
+        id: schedule.hcpClinicLocation.hcp.id,
+        firstName: schedule.hcpClinicLocation.hcp.user.firstName,
+        lastName: schedule.hcpClinicLocation.hcp.user.lastName,
+        speciality: schedule.hcpClinicLocation.hcp.speciality.name,
+      },
+      availableDays: schedule.availableDays,
+      slotDuration: schedule.slotDuration,
+      createdBy: schedule.createdBy,
+      createdAt: schedule.createdAt.toISOString(),
+      updatedAt: schedule.updatedAt.toISOString(),
+    }));
+  }
 }
