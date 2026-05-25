@@ -7,10 +7,14 @@ import {
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "../database/prisma.service";
 import { CreateHcpScheduleDto } from "./dto/create-hcp-schedule.dto";
+import { SlotsService } from "../slots/slots.service";
 
 @Injectable()
 export class HcpSchedulesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly slotsService: SlotsService,
+  ) {}
 
   async createHcpSchedule(
     createHcpScheduleDto: CreateHcpScheduleDto,
@@ -38,6 +42,14 @@ export class HcpSchedulesService {
           createdBy: userId,
         },
       });
+
+      // Trigger slot generation if today is in the available days
+      const today = new Date();
+      if (schedule.availableDays.includes(this.slotsService.getDayOfWeekEnum(today))) {
+        this.slotsService.syncSlotsForSchedule(schedule, today).catch((err) => {
+          console.error(`Failed to sync slots for schedule ${schedule.id}:`, err);
+        });
+      }
 
       return {
         id: schedule.id,

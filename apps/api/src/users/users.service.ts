@@ -24,13 +24,17 @@ import {
   PASSWORD_LOGIN_FAILURE_MESSAGE,
 } from "./constants";
 import { AuthenticatedUser } from "./jwt-auth.guard";
+import { SlotsService } from "../slots/slots.service";
 
 const scrypt = promisify(nodeScrypt);
 const SCRYPT_KEY_LENGTH = 64;
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly slotsService: SlotsService,
+  ) {}
 
   async register(createUserDto: CreateUserDto) {
     const role = await this.prisma.role.findUnique({
@@ -102,6 +106,18 @@ export class UsersService {
 
     if (!isPasswordValid) {
       throw new UnauthorizedException(PASSWORD_LOGIN_FAILURE_MESSAGE);
+    }
+
+    if (user.role.name === "HCP") {
+      const hcp = await this.prisma.hcp.findUnique({
+        where: { userId: user.id },
+      });
+      if (hcp) {
+        // Trigger slot generation asynchronously
+        this.slotsService.generateSlotsForToday(hcp.id).catch((err) => {
+          console.error(`Failed to generate slots for HCP ${hcp.id}:`, err);
+        });
+      }
     }
 
     return {
