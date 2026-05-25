@@ -347,3 +347,61 @@ Creates a new schedule for an HCP at a specific clinic location.
 - `401 Unauthorized` if request is not authenticated.
 - `404 Not Found` if `hcpClinicLocationId` does not exist.
 - `409 Conflict` if a schedule already exists for this mapping.
+
+## HCP Schedules List (By HCP)
+
+### `GET /api/hcp-schedules/hcp/:hcpId`
+
+Lists all schedules across all clinic locations for a specific HCP.
+
+#### Access Control
+
+- Authenticated endpoint
+- Requires `ADMIN` or `HCP` role
+
+#### Success Response
+
+- `200 OK`
+- Returns an array of schedule objects:
+  - `id`
+  - `hcpClinicLocationId`
+  - `clinicLocation` object (`id`, `addressLine1`, `addressLine2`, `suburb`, `state`, `postcode`)
+  - `availableDays`
+  - `slotDuration`
+  - `createdBy`
+  - `createdAt`
+  - `updatedAt`
+
+#### Error Responses
+
+- `400 Bad Request` if `hcpId` is invalid.
+- `401 Unauthorized` if request is not authenticated.
+
+## HCP Schedules List (By Clinic Location)
+
+### `GET /api/hcp-schedules/clinic-location/:clinicLocationId`
+
+Lists all HCPs and their schedules for a specific clinic location.
+
+#### Access Control
+
+- Authenticated endpoint
+- Requires `ADMIN` or `CLINIC_ADMIN` role
+
+#### Success Response
+
+- `200 OK`
+- Returns an array of schedule objects:
+  - `id`
+  - `hcpClinicLocationId`
+  - `hcp` object (`id`, `firstName`, `lastName`, `speciality`)
+  - `availableDays`
+  - `slotDuration`
+  - `createdBy`
+  - `createdAt`
+  - `updatedAt`
+
+#### Error Responses
+
+- `400 Bad Request` if `clinicLocationId` is invalid.
+- `401 Unauthorized` if request is not authenticated.
