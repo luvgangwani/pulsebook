@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { AllowedRoles } from "../users/allowed-roles.decorator";
+import { CurrentUser } from "../users/current-user.decorator";
+import { AuthenticatedUser } from "../users/jwt-auth.guard";
 import { JwtAuthGuard } from "../users/jwt-auth.guard";
 import { RoleGuard } from "../users/role.guard";
 import { CreateHcpClinicLocationDto } from "./dto/create-hcp-clinic-location.dto";
@@ -16,9 +18,11 @@ export class HcpClinicLocationsController {
   @AllowedRoles("ADMIN", "CLINIC_ADMIN")
   async createHcpClinicLocation(
     @Body() createHcpClinicLocationDto: CreateHcpClinicLocationDto,
+    @CurrentUser() user: AuthenticatedUser,
   ) {
     return this.hcpClinicLocationsService.createHcpClinicLocation(
       createHcpClinicLocationDto,
+      user,
     );
   }
 

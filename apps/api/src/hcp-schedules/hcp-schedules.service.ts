@@ -1,11 +1,13 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "../database/prisma.service";
+import { AuthenticatedUser } from "../users/jwt-auth.guard";
 import { CreateHcpScheduleDto } from "./dto/create-hcp-schedule.dto";
 import { SlotsService } from "../slots/slots.service";
 
@@ -18,7 +20,7 @@ export class HcpSchedulesService {
 
   async createHcpSchedule(
     createHcpScheduleDto: CreateHcpScheduleDto,
-    userId: string,
+    user: AuthenticatedUser,
   ) {
     const hcpClinicLocation = await this.prisma.hcpClinicLocation.findUnique({
       where: {
@@ -27,10 +29,23 @@ export class HcpSchedulesService {
           clinicLocationId: createHcpScheduleDto.clinicLocationId,
         },
       },
+      include: {
+        clinicLocation: true,
+      },
     });
 
     if (!hcpClinicLocation) {
       throw new NotFoundException("HCP clinic location mapping was not found.");
+    }
+
+    // Restriction: CLINIC_ADMIN only for their clinic
+    if (
+      user.roleName === "CLINIC_ADMIN" &&
+      hcpClinicLocation.clinicLocation.managedBy !== user.sub
+    ) {
+      throw new ForbiddenException(
+        "You can only create schedules for your own clinic locations.",
+      );
     }
 
     try {
@@ -39,7 +54,7 @@ export class HcpSchedulesService {
           hcpClinicLocationId: hcpClinicLocation.id,
           availableDays: createHcpScheduleDto.availableDays,
           slotDuration: createHcpScheduleDto.slotDuration,
-          createdBy: userId,
+          createdBy: user.sub,
         },
       });
 
@@ -113,9 +128,30 @@ export class HcpSchedulesService {
     }));
   }
 
-  async getSchedulesByClinicLocationId(clinicLocationId: string) {
+  async getSchedulesByClinicLocationId(
+    clinicLocationId: string,
+    user: AuthenticatedUser,
+  ) {
     if (!clinicLocationId || clinicLocationId.trim() === "") {
       throw new BadRequestException("clinicLocationId is required.");
+    }
+
+    const clinicLocation = await this.prisma.clinicLocation.findUnique({
+      where: { id: clinicLocationId },
+    });
+
+    if (!clinicLocation) {
+      throw new NotFoundException("Clinic location was not found.");
+    }
+
+    // Restriction: CLINIC_ADMIN only for their clinic
+    if (
+      user.roleName === "CLINIC_ADMIN" &&
+      clinicLocation.managedBy !== user.sub
+    ) {
+      throw new ForbiddenException(
+        "You can only view schedules for your own clinic locations.",
+      );
     }
 
     const schedules = await this.prisma.hcpSchedule.findMany({

@@ -101,10 +101,12 @@ Roles act as permission bundles and `user.role_id` remains the user's assigned p
 | address_line_1 | string   | yes      | no     | -          |
 | address_line_2 | string   | yes      | no     | -          |
 | suburb         | string   | yes      | no     | -          |
-| state          | string   | yes      | no     | -          |
-| postcode       | string   | no       | no     | -          |
-| created_by     | string   | yes      | no     | user.id    |
-| created_at     | datetime | no       | no     | -          |
+| state                  | string        | yes      | no     | -                       |
+| postcode               | string        | no       | no     | -                       |
+| created_by             | string        | yes      | no     | user.id                 |
+| managed_by             | string        | no       | no     | user.id                 |
+| created_at             | datetime      | no       | no     | -                       |
+
 | updated_at     | datetime | no       | no     | -          |
 
 ## Hcp Clinic Location

@@ -20,7 +20,7 @@ export class HcpSchedulesController {
   ) {
     return this.hcpSchedulesService.createHcpSchedule(
       createHcpScheduleDto,
-      user.sub,
+      user,
     );
   }
 
@@ -36,9 +36,11 @@ export class HcpSchedulesController {
   @AllowedRoles("ADMIN", "CLINIC_ADMIN")
   async getSchedulesByClinicLocationId(
     @Param("clinicLocationId") clinicLocationId: string,
+    @CurrentUser() user: AuthenticatedUser,
   ) {
     return this.hcpSchedulesService.getSchedulesByClinicLocationId(
       clinicLocationId,
+      user,
     );
   }
 }

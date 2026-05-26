@@ -136,7 +136,8 @@
         "addressLine1": "Daily Planet Building",
         "suburb": "Metropolis",
         "state": "NY",
-        "postcode": "10001"
+        "postcode": "10001",
+        "managedById": "REPLACE_WITH_LOIS_LANE_ID"
       }
     },
     {
@@ -146,7 +147,8 @@
         "addressLine1": "Wayne Manor",
         "suburb": "Gotham",
         "state": "NJ",
-        "postcode": "07001"
+        "postcode": "07001",
+        "managedById": "REPLACE_WITH_CLINIC_ADMIN_ID"
       }
     }
   ],

@@ -168,16 +168,17 @@ Creates a clinic location and stores the authenticated creator in `createdBy`.
 
 | Field        | Type   | Required | Notes                      |
 | ------------ | ------ | -------- | -------------------------- |
-| addressLine1 | string | no       | Clinic address line 1.     |
-| addressLine2 | string | no       | Clinic address line 2.     |
-| suburb       | string | no       | Clinic suburb.             |
-| state        | string | no       | Clinic state.              |
-| postcode     | string | yes      | Clinic postcode.           |
+| addressLine1  | string | no       | Clinic address line 1.          |
+| addressLine2  | string | no       | Clinic address line 2.          |
+| suburb        | string | no       | Clinic suburb.                  |
+| state         | string | no       | Clinic state.                   |
+| postcode      | string | yes      | Clinic postcode.                |
+| managedById   | string | yes      | User ID of the `CLINIC_ADMIN`.  |
 
 #### Success Response
 
 - `201 Created`
-- Returns the created clinic location payload:
+- Returns created clinic location payload:
   - `id`
   - `addressLine1`
   - `addressLine2`
@@ -185,8 +186,10 @@ Creates a clinic location and stores the authenticated creator in `createdBy`.
   - `state`
   - `postcode`
   - `createdBy`
+  - `managedBy`
   - `createdAt`
   - `updatedAt`
+
 
 #### Error Responses
 
@@ -208,7 +211,7 @@ Returns all clinic locations for admin users.
 #### Success Response
 
 - `200 OK`
-- Returns an array of clinic location payloads:
+- Returns an array of clinic location objects:
   - `id`
   - `addressLine1`
   - `addressLine2`
@@ -216,8 +219,10 @@ Returns all clinic locations for admin users.
   - `state`
   - `postcode`
   - `createdBy`
+  - `managedBy`
   - `createdAt`
   - `updatedAt`
+
 
 #### Error Responses
 
@@ -405,3 +410,64 @@ Lists all HCPs and their schedules for a specific clinic location.
 
 - `400 Bad Request` if `clinicLocationId` is invalid.
 - `401 Unauthorized` if request is not authenticated.
+
+## Appointments
+
+### `POST /api/appointments`
+
+Creates a new appointment for a specific slot and patient.
+
+#### Access Control
+
+- Authenticated endpoint
+- Requires `ADMIN`, `PATIENT`, `HCP`, or `CLINIC_ADMIN` role
+- `CLINIC_ADMIN` restricted to their own clinic locations
+
+#### Request Body
+
+| Field     | Type   | Required | Notes                            |
+| --------- | ------ | -------- | -------------------------------- |
+| slotId    | string | yes      | References `slot.id`.            |
+| patientId | string | yes      | References `patient.id`.         |
+
+#### Success Response
+
+- `201 Created`
+- Returns created appointment payload:
+  - `id`
+  - `slotId`
+  - `patientId`
+  - `status`
+  - `createdAt`
+  - `updatedAt`
+
+#### Error Responses
+
+- `400 Bad Request` for invalid or missing fields.
+- `403 Forbidden` if `CLINIC_ADMIN` attempts to book for another clinic.
+- `404 Not Found` if slot or patient does not exist.
+- `409 Conflict` if slot already has an active appointment.
+
+### `GET /api/appointments`
+
+Lists appointments based on role permissions.
+
+#### Access Control
+
+- `ADMIN`: all appointments
+- `CLINIC_ADMIN`: appointments for their own clinics
+- `PATIENT`: their own appointments
+- `HCP`: appointments for their own slots
+
+#### Success Response
+
+- `200 OK`
+- Returns an array of appointment objects.
+
+### `GET /api/appointments/:id`
+
+Retrieves details for a specific appointment.
+
+#### Access Control
+
+- Same restrictions as `GET /api/appointments`

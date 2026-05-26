@@ -1,11 +1,13 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "../database/prisma.service";
+import { AuthenticatedUser } from "../users/jwt-auth.guard";
 import { CreateHcpClinicLocationDto } from "./dto/create-hcp-clinic-location.dto";
 
 @Injectable()
@@ -14,6 +16,7 @@ export class HcpClinicLocationsService {
 
   async createHcpClinicLocation(
     createHcpClinicLocationDto: CreateHcpClinicLocationDto,
+    currentUser: AuthenticatedUser,
   ) {
     const [hcp, clinicLocation] = await Promise.all([
       this.prisma.hcp.findUnique({
@@ -30,6 +33,16 @@ export class HcpClinicLocationsService {
 
     if (!clinicLocation) {
       throw new NotFoundException("Clinic location was not found.");
+    }
+
+    // Restriction: CLINIC_ADMIN only for their clinic
+    if (
+      currentUser.roleName === "CLINIC_ADMIN" &&
+      clinicLocation.managedBy !== currentUser.sub
+    ) {
+      throw new ForbiddenException(
+        "You can only assign HCPs to your own clinic locations.",
+      );
     }
 
     try {
@@ -104,6 +117,7 @@ export class HcpClinicLocationsService {
         state: mapping.clinicLocation.state,
         postcode: mapping.clinicLocation.postcode,
         createdBy: mapping.clinicLocation.createdBy,
+        managedBy: mapping.clinicLocation.managedBy,
         assignedAt: mapping.createdAt.toISOString(),
       })),
     };
@@ -147,6 +161,7 @@ export class HcpClinicLocationsService {
         state: clinicLocation.state,
         postcode: clinicLocation.postcode,
         createdBy: clinicLocation.createdBy,
+        managedBy: clinicLocation.managedBy,
       },
       hcps: clinicLocation.hcpLinks.map((mapping) => ({
         id: mapping.hcp.id,
