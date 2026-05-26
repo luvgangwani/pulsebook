@@ -99,7 +99,10 @@ export class AppointmentsService {
             hcpSchedule: {
               include: {
                 hcpClinicLocation: {
-                  include: { clinicLocation: true },
+                  include: {
+                    clinicLocation: true,
+                    hcp: true,
+                  },
                 },
               },
             },
@@ -115,15 +118,26 @@ export class AppointmentsService {
       throw new NotFoundException("Appointment was not found.");
     }
 
-    // Restriction: CLINIC_ADMIN only for their clinic
-    if (
-      user.roleName === "CLINIC_ADMIN" &&
-      appointment.slot.hcpSchedule.hcpClinicLocation.clinicLocation.createdBy !==
+    // Restriction: Role-based ownership checks
+    if (user.roleName === "CLINIC_ADMIN") {
+      if (
+        appointment.slot.hcpSchedule.hcpClinicLocation.clinicLocation.createdBy !==
         user.sub
-    ) {
-      throw new ForbiddenException(
-        "You can only view appointments for your own clinic locations.",
-      );
+      ) {
+        throw new ForbiddenException(
+          "You can only view appointments for your own clinic locations.",
+        );
+      }
+    } else if (user.roleName === "PATIENT") {
+      if (appointment.patient.userId !== user.sub) {
+        throw new ForbiddenException("You can only view your own appointments.");
+      }
+    } else if (user.roleName === "HCP") {
+      if (appointment.slot.hcpSchedule.hcpClinicLocation.hcp.userId !== user.sub) {
+        throw new ForbiddenException(
+          "You can only view appointments for your own slots.",
+        );
+      }
     }
 
     return appointment;
