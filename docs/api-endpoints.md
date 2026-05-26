@@ -168,16 +168,17 @@ Creates a clinic location and stores the authenticated creator in `createdBy`.
 
 | Field        | Type   | Required | Notes                      |
 | ------------ | ------ | -------- | -------------------------- |
-| addressLine1 | string | no       | Clinic address line 1.     |
-| addressLine2 | string | no       | Clinic address line 2.     |
-| suburb       | string | no       | Clinic suburb.             |
-| state        | string | no       | Clinic state.              |
-| postcode     | string | yes      | Clinic postcode.           |
+| addressLine1  | string | no       | Clinic address line 1.          |
+| addressLine2  | string | no       | Clinic address line 2.          |
+| suburb        | string | no       | Clinic suburb.                  |
+| state         | string | no       | Clinic state.                   |
+| postcode      | string | yes      | Clinic postcode.                |
+| managedById   | string | yes      | User ID of the `CLINIC_ADMIN`.  |
 
 #### Success Response
 
 - `201 Created`
-- Returns the created clinic location payload:
+- Returns created clinic location payload:
   - `id`
   - `addressLine1`
   - `addressLine2`
@@ -185,8 +186,10 @@ Creates a clinic location and stores the authenticated creator in `createdBy`.
   - `state`
   - `postcode`
   - `createdBy`
+  - `managedBy`
   - `createdAt`
   - `updatedAt`
+
 
 #### Error Responses
 
@@ -208,7 +211,7 @@ Returns all clinic locations for admin users.
 #### Success Response
 
 - `200 OK`
-- Returns an array of clinic location payloads:
+- Returns an array of clinic location objects:
   - `id`
   - `addressLine1`
   - `addressLine2`
@@ -216,8 +219,10 @@ Returns all clinic locations for admin users.
   - `state`
   - `postcode`
   - `createdBy`
+  - `managedBy`
   - `createdAt`
   - `updatedAt`
+
 
 #### Error Responses
 

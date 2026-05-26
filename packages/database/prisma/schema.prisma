@@ -38,6 +38,7 @@ model User {
   patient Patient?
   hcp     Hcp?
   createdClinicLocations ClinicLocation[] @relation("ClinicLocationCreator")
+  managedClinicLocations ClinicLocation[] @relation("ClinicLocationManager")
   createdHcpSchedules    HcpSchedule[]    @relation("HcpScheduleCreator")
 
   @@map("user")
@@ -121,10 +122,12 @@ model ClinicLocation {
   state        String?
   postcode     String
   createdBy    String?  @map("created_by")
+  managedBy    String   @map("managed_by")
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
   createdByUser User? @relation("ClinicLocationCreator", fields: [createdBy], references: [id])
+  managedByUser User  @relation("ClinicLocationManager", fields: [managedBy], references: [id])
   hcpLinks      HcpClinicLocation[]
 
   @@map("clinic_location")

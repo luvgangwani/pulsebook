@@ -38,4 +38,9 @@ export class CreateClinicLocationDto {
   @IsString()
   @IsNotEmpty()
   postcode!: string;
+
+  @Transform(trimString)
+  @IsString()
+  @IsNotEmpty()
+  managedById!: string;
 }
