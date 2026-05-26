@@ -44,7 +44,7 @@ export class AppointmentsService {
       // 1. Restriction: CLINIC_ADMIN only for their clinic
       if (
         user.roleName === "CLINIC_ADMIN" &&
-        slot.hcpSchedule.hcpClinicLocation.clinicLocation.createdBy !== user.sub
+        slot.hcpSchedule.hcpClinicLocation.clinicLocation.managedBy !== user.sub
       ) {
         throw new ForbiddenException(
           "You can only create appointments for your own clinic locations.",
@@ -154,7 +154,7 @@ export class AppointmentsService {
     // Restriction: Role-based ownership checks
     if (user.roleName === "CLINIC_ADMIN") {
       if (
-        appointment.slot.hcpSchedule.hcpClinicLocation.clinicLocation.createdBy !==
+        appointment.slot.hcpSchedule.hcpClinicLocation.clinicLocation.managedBy !==
         user.sub
       ) {
         throw new ForbiddenException(
@@ -185,12 +185,13 @@ export class AppointmentsService {
         hcpSchedule: {
           hcpClinicLocation: {
             clinicLocation: {
-              createdBy: user.sub,
+              managedBy: user.sub,
             },
           },
         },
       };
-    } else if (user.roleName === "PATIENT") {
+    }
+ else if (user.roleName === "PATIENT") {
       // Typically patients only see their own.
       const patient = await this.prisma.patient.findUnique({
         where: { userId: user.sub },

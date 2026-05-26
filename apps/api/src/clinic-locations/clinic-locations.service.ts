@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../database/prisma.service";
 import { AuthenticatedUser } from "../users/jwt-auth.guard";
 import { CreateClinicLocationDto } from "./dto/create-clinic-location.dto";
@@ -22,6 +22,7 @@ export class ClinicLocationsService {
       state: clinicLocation.state,
       postcode: clinicLocation.postcode,
       createdBy: clinicLocation.createdBy,
+      managedBy: clinicLocation.managedBy,
       createdAt: clinicLocation.createdAt.toISOString(),
       updatedAt: clinicLocation.updatedAt.toISOString(),
     }));
@@ -31,6 +32,19 @@ export class ClinicLocationsService {
     currentUser: AuthenticatedUser,
     createClinicLocationDto: CreateClinicLocationDto,
   ) {
+    const manager = await this.prisma.user.findUnique({
+      where: { id: createClinicLocationDto.managedById },
+      include: { role: true },
+    });
+
+    if (!manager) {
+      throw new NotFoundException("Manager user was not found.");
+    }
+
+    if (manager.role.name !== "CLINIC_ADMIN") {
+      throw new BadRequestException("Assigned manager must have CLINIC_ADMIN role.");
+    }
+
     const clinicLocation = await this.prisma.clinicLocation.create({
       data: {
         addressLine1: createClinicLocationDto.addressLine1,
@@ -39,6 +53,7 @@ export class ClinicLocationsService {
         state: createClinicLocationDto.state,
         postcode: createClinicLocationDto.postcode,
         createdBy: currentUser.sub,
+        managedBy: createClinicLocationDto.managedById,
       },
     });
 
@@ -50,6 +65,7 @@ export class ClinicLocationsService {
       state: clinicLocation.state,
       postcode: clinicLocation.postcode,
       createdBy: clinicLocation.createdBy,
+      managedBy: clinicLocation.managedBy,
       createdAt: clinicLocation.createdAt.toISOString(),
       updatedAt: clinicLocation.updatedAt.toISOString(),
     };
