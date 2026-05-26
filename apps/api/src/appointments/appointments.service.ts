@@ -1,0 +1,194 @@
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
+import { AppointmentStatus, Prisma } from "@prisma/client";
+import { PrismaService } from "../database/prisma.service";
+import { AuthenticatedUser } from "../users/jwt-auth.guard";
+import { CreateAppointmentDto } from "./dto/create-appointment.dto";
+
+@Injectable()
+export class AppointmentsService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async createAppointment(
+    createAppointmentDto: CreateAppointmentDto,
+    user: AuthenticatedUser,
+  ) {
+    const slot = await this.prisma.slot.findUnique({
+      where: { id: createAppointmentDto.slotId },
+      include: {
+        hcpSchedule: {
+          include: {
+            hcpClinicLocation: {
+              include: { clinicLocation: true },
+            },
+          },
+        },
+        appointments: {
+          where: {
+            status: { in: [AppointmentStatus.PENDING, AppointmentStatus.ACCEPTED] },
+          },
+        },
+      },
+    });
+
+    if (!slot) {
+      throw new NotFoundException("Slot was not found.");
+    }
+
+    // 1. Restriction: CLINIC_ADMIN only for their clinic
+    if (
+      user.roleName === "CLINIC_ADMIN" &&
+      slot.hcpSchedule.hcpClinicLocation.clinicLocation.createdBy !== user.sub
+    ) {
+      throw new ForbiddenException(
+        "You can only create appointments for your own clinic locations.",
+      );
+    }
+
+    // 2. Conflict: Slot already has an active appointment
+    if (slot.appointments.length > 0) {
+      throw new ConflictException("This slot already has an active appointment.");
+    }
+
+    // 3. Validation: Verify patient exists
+    const patient = await this.prisma.patient.findUnique({
+      where: { id: createAppointmentDto.patientId },
+    });
+
+    if (!patient) {
+      throw new NotFoundException("Patient was not found.");
+    }
+
+    // 4. Create appointment
+    const appointment = await this.prisma.appointment.create({
+      data: {
+        slotId: createAppointmentDto.slotId,
+        patientId: createAppointmentDto.patientId,
+        status: AppointmentStatus.PENDING,
+      },
+      include: {
+        slot: true,
+        patient: {
+          include: {
+            user: {
+              select: {
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return appointment;
+  }
+
+  async getAppointment(id: string, user: AuthenticatedUser) {
+    const appointment = await this.prisma.appointment.findUnique({
+      where: { id },
+      include: {
+        slot: {
+          include: {
+            hcpSchedule: {
+              include: {
+                hcpClinicLocation: {
+                  include: { clinicLocation: true },
+                },
+              },
+            },
+          },
+        },
+        patient: {
+          include: { user: true },
+        },
+      },
+    });
+
+    if (!appointment) {
+      throw new NotFoundException("Appointment was not found.");
+    }
+
+    // Restriction: CLINIC_ADMIN only for their clinic
+    if (
+      user.roleName === "CLINIC_ADMIN" &&
+      appointment.slot.hcpSchedule.hcpClinicLocation.clinicLocation.createdBy !==
+        user.sub
+    ) {
+      throw new ForbiddenException(
+        "You can only view appointments for your own clinic locations.",
+      );
+    }
+
+    return appointment;
+  }
+
+  async getAppointments(user: AuthenticatedUser) {
+    const where: Prisma.AppointmentWhereInput = {};
+
+    // Restriction: CLINIC_ADMIN only for their clinic
+    if (user.roleName === "CLINIC_ADMIN") {
+      where.slot = {
+        hcpSchedule: {
+          hcpClinicLocation: {
+            clinicLocation: {
+              createdBy: user.sub,
+            },
+          },
+        },
+      };
+    } else if (user.roleName === "PATIENT") {
+      // Typically patients only see their own.
+      const patient = await this.prisma.patient.findUnique({
+        where: { userId: user.sub },
+      });
+      if (patient) {
+        where.patientId = patient.id;
+      }
+    } else if (user.roleName === "HCP") {
+      // Typically HCPs only see their own slots.
+      const hcp = await this.prisma.hcp.findUnique({
+        where: { userId: user.sub },
+      });
+      if (hcp) {
+        where.slot = {
+          hcpSchedule: {
+            hcpClinicLocation: {
+              hcpId: hcp.id,
+            },
+          },
+        };
+      }
+    }
+
+    return this.prisma.appointment.findMany({
+      where,
+      include: {
+        slot: {
+          include: {
+            hcpSchedule: {
+              include: {
+                hcpClinicLocation: {
+                  include: {
+                    clinicLocation: true,
+                    hcp: { include: { user: true } },
+                  },
+                },
+              },
+            },
+          },
+        },
+        patient: {
+          include: { user: true },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+}

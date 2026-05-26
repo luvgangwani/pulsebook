@@ -467,6 +467,54 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Appointments",
+			"item": [
+				{
+					"name": "Create Appointment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"slotId\": \"{{slotId}}\",\n  \"patientId\": \"{{patientId}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/appointments",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"appointments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Appointments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/appointments",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"appointments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"variable": [
@@ -487,6 +535,16 @@
 		},
 		{
 			"key": "clinicLocationId",
+			"value": "REPLACE_ME",
+			"type": "string"
+		},
+		{
+			"key": "slotId",
+			"value": "REPLACE_ME",
+			"type": "string"
+		},
+		{
+			"key": "patientId",
 			"value": "REPLACE_ME",
 			"type": "string"
 		}
