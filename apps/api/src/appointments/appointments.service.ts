@@ -56,13 +56,20 @@ export class AppointmentsService {
         throw new ConflictException("This slot already has an active appointment.");
       }
 
-      // 3. Validation: Verify patient exists
+      // 3. Validation: Verify patient exists and authorization
       const patient = await tx.patient.findUnique({
         where: { id: createAppointmentDto.patientId },
       });
 
       if (!patient) {
         throw new NotFoundException("Patient was not found.");
+      }
+
+      // 3b. Restriction: PATIENT can only book for themselves
+      if (user.roleName === "PATIENT" && patient.userId !== user.sub) {
+        throw new ForbiddenException(
+          "You can only create appointments for yourself.",
+        );
       }
 
       // 4. Create appointment
