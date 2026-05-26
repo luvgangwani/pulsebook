@@ -162,23 +162,25 @@ export class AppointmentsService {
       const patient = await this.prisma.patient.findUnique({
         where: { userId: user.sub },
       });
-      if (patient) {
-        where.patientId = patient.id;
+      if (!patient) {
+        throw new NotFoundException("Patient profile was not found.");
       }
+      where.patientId = patient.id;
     } else if (user.roleName === "HCP") {
       // Typically HCPs only see their own slots.
       const hcp = await this.prisma.hcp.findUnique({
         where: { userId: user.sub },
       });
-      if (hcp) {
-        where.slot = {
-          hcpSchedule: {
-            hcpClinicLocation: {
-              hcpId: hcp.id,
-            },
-          },
-        };
+      if (!hcp) {
+        throw new NotFoundException("HCP profile was not found.");
       }
+      where.slot = {
+        hcpSchedule: {
+          hcpClinicLocation: {
+            hcpId: hcp.id,
+          },
+        },
+      };
     }
 
     return this.prisma.appointment.findMany({
