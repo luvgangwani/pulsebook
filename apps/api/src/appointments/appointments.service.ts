@@ -18,76 +18,89 @@ export class AppointmentsService {
     createAppointmentDto: CreateAppointmentDto,
     user: AuthenticatedUser,
   ) {
-    const slot = await this.prisma.slot.findUnique({
-      where: { id: createAppointmentDto.slotId },
-      include: {
-        hcpSchedule: {
-          include: {
-            hcpClinicLocation: {
-              include: { clinicLocation: true },
-            },
-          },
-        },
-        appointments: {
-          where: {
-            status: { in: [AppointmentStatus.PENDING, AppointmentStatus.ACCEPTED] },
-          },
-        },
-      },
-    });
-
-    if (!slot) {
-      throw new NotFoundException("Slot was not found.");
-    }
-
-    // 1. Restriction: CLINIC_ADMIN only for their clinic
-    if (
-      user.roleName === "CLINIC_ADMIN" &&
-      slot.hcpSchedule.hcpClinicLocation.clinicLocation.createdBy !== user.sub
-    ) {
-      throw new ForbiddenException(
-        "You can only create appointments for your own clinic locations.",
-      );
-    }
-
-    // 2. Conflict: Slot already has an active appointment
-    if (slot.appointments.length > 0) {
-      throw new ConflictException("This slot already has an active appointment.");
-    }
-
-    // 3. Validation: Verify patient exists
-    const patient = await this.prisma.patient.findUnique({
-      where: { id: createAppointmentDto.patientId },
-    });
-
-    if (!patient) {
-      throw new NotFoundException("Patient was not found.");
-    }
-
-    // 4. Create appointment
-    const appointment = await this.prisma.appointment.create({
-      data: {
-        slotId: createAppointmentDto.slotId,
-        patientId: createAppointmentDto.patientId,
-        status: AppointmentStatus.PENDING,
-      },
-      include: {
-        slot: true,
-        patient: {
-          include: {
-            user: {
-              select: {
-                firstName: true,
-                lastName: true,
-                email: true,
+    return this.prisma.$transaction(async (tx) => {
+      const slot = await tx.slot.findUnique({
+        where: { id: createAppointmentDto.slotId },
+        include: {
+          hcpSchedule: {
+            include: {
+              hcpClinicLocation: {
+                include: { clinicLocation: true },
               },
             },
           },
+          appointments: {
+            where: {
+              status: { in: [AppointmentStatus.PENDING, AppointmentStatus.ACCEPTED] },
+            },
+          },
         },
-      },
-    });
+      });
 
-    return appointment;
+      if (!slot) {
+        throw new NotFoundException("Slot was not found.");
+      }
+
+      // 1. Restriction: CLINIC_ADMIN only for their clinic
+      if (
+        user.roleName === "CLINIC_ADMIN" &&
+        slot.hcpSchedule.hcpClinicLocation.clinicLocation.createdBy !== user.sub
+      ) {
+        throw new ForbiddenException(
+          "You can only create appointments for your own clinic locations.",
+        );
+      }
+
+      // 2. Conflict: Slot already has an active appointment
+      if (slot.appointments.length > 0) {
+        throw new ConflictException("This slot already has an active appointment.");
+      }
+
+      // 3. Validation: Verify patient exists
+      const patient = await tx.patient.findUnique({
+        where: { id: createAppointmentDto.patientId },
+      });
+
+      if (!patient) {
+        throw new NotFoundException("Patient was not found.");
+      }
+
+      // 4. Create appointment
+      try {
+        const appointment = await tx.appointment.create({
+          data: {
+            slotId: createAppointmentDto.slotId,
+            patientId: createAppointmentDto.patientId,
+            status: AppointmentStatus.PENDING,
+          },
+          include: {
+            slot: true,
+            patient: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        return appointment;
+      } catch (error) {
+        if (
+          error instanceof Prisma.PrismaClientKnownRequestError &&
+          error.code === "P2002"
+        ) {
+          throw new ConflictException("This slot already has an active appointment.");
+        }
+        throw error;
+      }
+    });
   }
 
   async getAppointment(id: string, user: AuthenticatedUser) {
@@ -101,7 +114,18 @@ export class AppointmentsService {
                 hcpClinicLocation: {
                   include: {
                     clinicLocation: true,
-                    hcp: true,
+                    hcp: {
+                      include: {
+                        user: {
+                          select: {
+                            id: true,
+                            firstName: true,
+                            lastName: true,
+                            email: true,
+                          },
+                        },
+                      },
+                    },
                   },
                 },
               },
@@ -109,7 +133,16 @@ export class AppointmentsService {
           },
         },
         patient: {
-          include: { user: true },
+          include: {
+            user: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+          },
         },
       },
     });
@@ -193,7 +226,18 @@ export class AppointmentsService {
                 hcpClinicLocation: {
                   include: {
                     clinicLocation: true,
-                    hcp: { include: { user: true } },
+                    hcp: {
+                      include: {
+                        user: {
+                          select: {
+                            id: true,
+                            firstName: true,
+                            lastName: true,
+                            email: true,
+                          },
+                        },
+                      },
+                    },
                   },
                 },
               },
@@ -201,7 +245,16 @@ export class AppointmentsService {
           },
         },
         patient: {
-          include: { user: true },
+          include: {
+            user: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+          },
         },
       },
       orderBy: { createdAt: "desc" },
