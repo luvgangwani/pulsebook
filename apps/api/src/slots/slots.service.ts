@@ -30,8 +30,13 @@ export class SlotsService {
   }
 
   async syncSlotsForSchedule(schedule: any, date: Date) {
-    const slotDate = new Date(date);
-    slotDate.setHours(0, 0, 0, 0);
+    // Construct UTC midnight date for the intended local day to avoid timezone shifts
+    const slotDate = new Date(Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      0, 0, 0, 0
+    ));
 
     // 1. Delete slots for this schedule and day that have NO appointments
     // Slots with historical (REJECTED) appointments cannot be deleted due to FK constraints.
@@ -52,7 +57,8 @@ export class SlotsService {
     // 3. Insert slots that don't exist
     for (const timeStr of expectedSlots) {
       const [hours, minutes] = timeStr.split(":").map(Number);
-      const slotTime = new Date(1970, 0, 1, hours, minutes, 0);
+      // Construct UTC time for the intended local time to avoid timezone shifts
+      const slotTime = new Date(Date.UTC(1970, 0, 1, hours, minutes, 0));
 
       try {
         await this.prisma.slot.create({
