@@ -37,8 +37,13 @@ Used for managing global UI state (e.g., active theme, sidebar toggle, or curren
 
 ## 3. Styling & UI Components
 
-_To be implemented in the next phase._
-The planned approach is **Tailwind CSS** paired with **shadcn/ui** for accessible, headless components that we can style directly within the repository.
+We use **Tailwind CSS** paired with **shadcn/ui**.
+
+### Accessibility-First Approach: Radix UI
+Pulsebook is a healthcare application, making accessibility (A11y) a core requirement. We chose **shadcn/ui** specifically because it is built on top of **Radix UI** primitives.
+- **WAI-ARIA Compliance:** Radix handles complex accessibility patterns (focus management, keyboard navigation, aria-attributes) out of the box.
+- **Inclusion:** Using accessible primitives ensures the platform is usable by patients with diverse needs and assistive technologies.
+- **Customization:** shadcn/ui provides "copy-paste" components that we own locally, allowing us to maintain full control over the markup while keeping the accessible behavior.
 
 ## 4. Development Phasing: UI-First vs Auth-First
 
