@@ -32,7 +32,7 @@ Build the final branch name as `<branch_type>/<branch_name>`.
 
 ## Naming Rules
 
-- Keep the branch type exactly one of: `feature`, `fix`, `docs`, `refactor`.
+- Keep the branch type exactly one of: `feature`, `fix`, `docs`, `refactor`, `setup`.
 - Normalize the branch name to lowercase hyphen-case before creating the branch.
 - Do not add extra prefixes or suffixes.
 - Final branch name must be exactly `<branch_type>/<branch_name>`.
