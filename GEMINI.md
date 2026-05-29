@@ -114,9 +114,11 @@ Prefer small modules with explicit exports. Keep Next route files inside `src/ap
 - `docs/database.md`: Detailed entity definitions and relationships.
 - `docs/api-endpoints.md`: List of available API endpoints.
 - `docs/roles-and-permissions.md`: Details on the RBAC system.
+- `docs/frontend-architecture.md`: Tradeoffs and decisions for the Next.js frontend.
 
 | Documentation         | Path                            |
 | --------------------- | ------------------------------- |
 | Database              | ./docs/database.md              |
 | API Endpoints         | ./docs/api-endpoints.md         |
 | Roles and permissions | ./docs/roles-and-permissions.md |
+| Frontend Architecture | ./docs/frontend-architecture.md |
