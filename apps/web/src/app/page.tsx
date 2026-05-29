@@ -1,37 +1,8 @@
 "use client";
 
-/**
- * Health Dashboard - Dark Theme & Flex Layout
- * 
- * Demonstrates:
- * - TanStack Query: Real-time server state for services.
- * - Zustand: Global UI state (refresh counter).
- * - shadcn/ui: Row-based flex layout with dark theme aesthetics.
- */
-
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { useHealthStore } from "@/store/useHealthStore";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle,
-  CardFooter
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { 
-  RefreshCw, 
-  Activity, 
-  Server, 
-  Clock, 
-  CheckCircle2, 
-  AlertCircle,
-  Database,
-  Globe
-} from "lucide-react";
 
 interface HealthResponse {
   status: string;
@@ -56,148 +27,113 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-50 flex flex-col items-center py-16 px-4">
+    <main className="min-h-screen bg-[#0a0a0a] text-white flex flex-col items-center py-20 px-4 font-sans">
       <div className="w-full max-w-6xl space-y-12">
-        {/* Page Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-blue-400 font-bold text-sm uppercase tracking-wider">
-              <Activity className="w-4 h-4 animate-pulse" />
-              System Pulse
+        
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-white/10 pb-10">
+          <div className="space-y-3">
+            <div className="text-blue-500 font-bold text-xs uppercase tracking-[0.2em] flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+              Infrastructure Monitoring
             </div>
-            <h1 className="text-4xl font-black tracking-tight text-white">
-              Pulsebook Infrastructure
+            <h1 className="text-4xl font-extrabold tracking-tight">
+              Pulsebook <span className="text-blue-500">Pulse</span>
             </h1>
-            <p className="text-slate-400 max-w-md font-medium">
-              Real-time monitoring of monorepo services in a row-based flexible layout.
+            <p className="text-zinc-400 font-medium">
+              Real-time health status of monorepo services.
             </p>
           </div>
           
-          <div className="flex items-center gap-4 bg-slate-900 p-2 rounded-xl shadow-2xl border border-slate-800">
-            <div className="px-3 py-1 text-right">
-              <p className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Cycles</p>
-              <p className="text-lg font-black text-blue-400 leading-tight">{refreshCount}</p>
+          <div className="flex items-center gap-6 bg-zinc-900 p-4 rounded-xl border border-white/5">
+            <div className="text-right px-4 border-r border-white/10">
+              <p className="text-[10px] uppercase font-bold text-zinc-500 mb-1">Refreshes</p>
+              <p className="text-2xl font-bold tabular-nums">{refreshCount}</p>
             </div>
-            <div className="w-px h-8 bg-slate-800" />
-            <Button 
+            <button 
               onClick={handleRefresh} 
               disabled={isFetching}
-              className="bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg px-6 border-none shadow-[0_0_15px_rgba(37,99,235,0.4)]"
+              className="bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg transition-all active:scale-95"
             >
-              <RefreshCw className={`w-4 h-4 mr-2 ${isFetching ? "animate-spin" : ""}`} />
-              Pulse Sync
-            </Button>
+              {isFetching ? "Syncing..." : "Sync Pulse"}
+            </button>
           </div>
         </div>
 
         {/* Services Flex Row */}
-        <div className="flex flex-row flex-wrap gap-6 justify-start">
+        <div className="flex flex-row flex-wrap gap-8">
           
-          {/* API Service Card */}
-          <Card className="flex-1 min-w-[320px] group border-slate-800 shadow-none hover:shadow-[0_0_30px_rgba(30,41,59,0.5)] transition-all duration-300 bg-slate-900 text-slate-50">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <div className="p-2.5 bg-blue-950/50 rounded-xl text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors border border-blue-900/50">
-                <Server className="w-6 h-6" />
+          {/* API Card */}
+          <div className="flex-1 min-w-[340px] bg-zinc-900 border border-white/5 rounded-2xl p-8 space-y-6 hover:border-white/10 transition-colors shadow-2xl">
+            <div className="flex justify-between items-start">
+              <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center border border-blue-500/20">
+                <span className="text-xl">📡</span>
               </div>
               {isLoading ? (
-                <div className="h-5 w-16 bg-slate-800 animate-pulse rounded-full" />
-              ) : isError ? (
-                <Badge variant="destructive" className="font-bold border-none">OFFLINE</Badge>
+                <div className="h-6 w-16 bg-zinc-800 animate-pulse rounded-full" />
               ) : (
-                <Badge variant="default" className="bg-emerald-500 hover:bg-emerald-500 font-black px-3 border-none text-slate-950">
-                  ONLINE
-                </Badge>
+                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${data?.status === 'ok' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'}`}>
+                  {isError ? "Offline" : "Online"}
+                </span>
               )}
-            </CardHeader>
-            <CardHeader className="pt-2">
-              <CardTitle className="text-xl font-black text-white">
-                {isLoading ? "API Service" : data?.service.toUpperCase()}
-              </CardTitle>
-              <CardDescription className="font-bold text-slate-500 uppercase tracking-tighter text-[10px]">Gateway Protocol</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 text-slate-300 bg-slate-950/50 p-3 rounded-lg border border-slate-800/50">
-                  {isError ? (
-                    <AlertCircle className="w-4 h-4 text-red-500" />
-                  ) : (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]" />
-                  )}
-                  <span className="text-sm font-medium italic">
-                    {isError ? "Connection Terminated" : "All systems operational"}
-                  </span>
-                </div>
-                <div className="flex items-center gap-3 text-slate-500 px-1">
-                  <Clock className="w-4 h-4" />
-                  <span className="text-xs font-mono font-bold">
-                    {isLoading ? "--:--:--" : new Date(data?.timestamp || "").toLocaleTimeString()}
-                  </span>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="pt-4 border-t border-slate-800 flex justify-between items-center text-[9px] uppercase font-black tracking-[0.2em] text-slate-600">
-              <span>Query Instance Active</span>
-              {isFetching && <RefreshCw className="w-3 h-3 animate-spin text-blue-500" />}
-            </CardFooter>
-          </Card>
+            </div>
+            
+            <div className="space-y-1">
+              <h2 className="text-xl font-bold uppercase tracking-tight">
+                {isLoading ? "Loading Service..." : data?.service}
+              </h2>
+              <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Main API Gateway</p>
+            </div>
 
-          {/* Database Placeholder Card */}
-          <Card className="flex-1 min-w-[320px] opacity-40 border-dashed border-slate-800 shadow-none bg-slate-900/30 cursor-not-allowed">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <div className="p-2.5 bg-slate-800/50 rounded-xl text-slate-600">
-                <Database className="w-6 h-6" />
+            <div className="pt-4 border-t border-white/5 space-y-4">
+              <div className="flex items-center gap-3 text-zinc-400 bg-black/40 p-4 rounded-xl border border-white/5">
+                <span className="text-sm">
+                  {isError ? "⚠️ Connection Error" : "✅ Systems Operational"}
+                </span>
               </div>
-              <Badge variant="secondary" className="font-black border-none text-[9px] bg-slate-800 text-slate-400">WAITING</Badge>
-            </CardHeader>
-            <CardHeader className="pt-2">
-              <CardTitle className="text-xl font-black text-slate-700 italic underline decoration-slate-800 underline-offset-4">DB_CLUSTER</CardTitle>
-              <CardDescription className="font-bold text-slate-600 uppercase tracking-tighter text-[10px]">Persistence Layer</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-slate-600 font-bold leading-relaxed">
-                PostgreSQL health probes integration scheduled for sprint 2.
-              </p>
-            </CardContent>
-          </Card>
+              <div className="flex justify-between items-center px-1">
+                <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">Last Sync</span>
+                <span className="text-xs font-mono font-bold text-zinc-400">
+                  {isLoading ? "--:--:--" : new Date(data?.timestamp || "").toLocaleTimeString()}
+                </span>
+              </div>
+            </div>
+          </div>
 
-          {/* Web Placeholder Card */}
-          <Card className="flex-1 min-w-[320px] opacity-40 border-dashed border-slate-800 shadow-none bg-slate-900/30 cursor-not-allowed">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <div className="p-2.5 bg-slate-800/50 rounded-xl text-slate-600">
-                <Globe className="w-6 h-6" />
+          {/* DB Placeholder */}
+          <div className="flex-1 min-w-[340px] bg-zinc-900/40 border border-dashed border-white/10 rounded-2xl p-8 space-y-6 opacity-40">
+            <div className="flex justify-between items-start">
+              <div className="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center">
+                <span className="text-xl">💾</span>
               </div>
-              <Badge variant="secondary" className="font-black border-none text-[9px] bg-slate-800 text-slate-400">DEV_MODE</Badge>
-            </CardHeader>
-            <CardHeader className="pt-2">
-              <CardTitle className="text-xl font-black text-slate-700 italic underline decoration-slate-800 underline-offset-4">WEB_NODE</CardTitle>
-              <CardDescription className="font-bold text-slate-600 uppercase tracking-tighter text-[10px]">Edge Runtime</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-slate-600 font-bold leading-relaxed">
-                Next.js 15 App Router running with HMR synchronization.
-              </p>
-            </CardContent>
-          </Card>
+              <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-zinc-800 text-zinc-500">
+                Pending
+              </span>
+            </div>
+            <div className="space-y-1">
+              <h2 className="text-xl font-bold uppercase tracking-tight text-zinc-700">Database</h2>
+              <p className="text-[10px] font-bold text-zinc-700 uppercase tracking-widest">Primary Store</p>
+            </div>
+            <p className="text-xs text-zinc-700 font-bold leading-relaxed pt-4 border-t border-white/5">
+              Telemetry integration for PostgreSQL cluster scheduled for next phase.
+            </p>
+          </div>
 
         </div>
 
-        {/* Tech Stack Signal */}
-        <div className="pt-16 border-t border-slate-900 flex flex-wrap gap-16 justify-center">
-          <div className="group flex items-center gap-3">
-            <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.8)]" />
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 group-hover:text-blue-400 transition-colors">Zustand</span>
+        {/* Footer Tech Labels */}
+        <div className="pt-16 border-t border-white/5 flex flex-wrap gap-12 justify-center opacity-40">
+          <div className="flex items-center gap-3">
+            <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500">Zustand</span>
           </div>
-          <div className="group flex items-center gap-3">
-            <div className="w-1.5 h-1.5 rounded-full bg-purple-500 shadow-[0_0_12px_rgba(168,85,247,0.8)]" />
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 group-hover:text-purple-400 transition-colors">React Query</span>
+          <div className="flex items-center gap-3">
+            <div className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500">React Query</span>
           </div>
-          <div className="group flex items-center gap-3">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.8)]" />
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 group-hover:text-emerald-400 transition-colors">Tailwind 4</span>
-          </div>
-          <div className="group flex items-center gap-3">
-            <div className="w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.5)]" />
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 group-hover:text-white transition-colors">Radix UI</span>
+          <div className="flex items-center gap-3">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500">Tailwind 4</span>
           </div>
         </div>
       </div>
