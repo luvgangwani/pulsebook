@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 import { cn } from "@/lib/utils";
 
 interface HealthResponse {
@@ -29,7 +30,11 @@ export default function HomePage() {
   });
 
   return (
-    <main className="min-h-screen bg-background text-foreground flex flex-col items-center py-12 px-4 font-sans">
+    <main className="min-h-screen bg-background text-foreground flex flex-col items-center py-12 px-4 font-sans relative">
+      <div className="absolute top-8 right-8">
+        <ModeToggle />
+      </div>
+
       <div className="w-full max-w-6xl flex flex-col items-center">
         {/* Branding Header */}
         <div className="text-center space-y-4 mb-16">

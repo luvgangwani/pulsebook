@@ -50,3 +50,21 @@ We have elected to build out core UI pages (search, schedules, dashboards) prior
 - **Velocity:** Rapid prototyping of interfaces without being blocked by login flows or token management.
 - **Feedback Loop:** Stakeholders can review layouts and user journeys earlier.
 - **Isolation:** Component design and styling can be perfected independently of backend integration.
+
+## 5. Theme Management
+
+We use a combination of `next-themes`, CSS Variables, and Tailwind CSS to support Light, Dark, and System modes.
+
+### The Flow
+
+1.  **State Management**: `next-themes` acts as the central engine, handling persistence (via `localStorage`) and system preference detection (`prefers-color-scheme`).
+2.  **HTML Class Toggling**: When a theme is selected (e.g., "dark"), `next-themes` injects the corresponding class (`.dark`) into the `<html>` element.
+3.  **CSS Variable Mapping**: In `globals.css`, set colors are defined for both `:root` (light) and `.dark`.
+    - `:root` contains the light theme values.
+    - `.dark` overrides those values for the dark theme.
+4.  **Tailwind Utility Classes**: All components use semantic Tailwind classes (e.g., `bg-background`, `text-primary`). These classes are mapped to the CSS variables.
+5.  **Instant Updates**: Because variables are defined globally, toggling the `.dark` class on the `<html>` element instantly swaps the color values across the entire application without a page reload.
+
+### Component Implementation
+
+A `ModeToggle` component (standard shadcn pattern) provides the user interface for theme selection, interacting with the `useTheme` hook from `next-themes`.
