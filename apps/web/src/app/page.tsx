@@ -25,15 +25,15 @@ export default function HomePage() {
       const response = await api.get("/health");
       return response.data;
     },
-    refetchInterval: 10000, // Refresh every 10 seconds
+    refetchInterval: 10000,
   });
 
   return (
-    <main className="min-h-screen bg-background text-foreground flex flex-col items-center py-20 px-4 font-sans">
+    <main className="min-h-screen bg-background text-foreground flex flex-col items-center py-12 px-4 font-sans">
       <div className="w-full max-w-6xl flex flex-col items-center">
         {/* Branding Header */}
         <div className="text-center space-y-4 mb-16">
-          <h1 className="text-6xl font-black tracking-tighter text-primary">
+          <h1 className="text-6xl font-extrabold tracking-tighter text-primary">
             Pulsebook
           </h1>
           <h2 className="text-2xl font-medium text-secondary">
@@ -43,36 +43,35 @@ export default function HomePage() {
 
         {/* API Health Card */}
         <div className="w-full max-w-md">
-          <Card className="border-border bg-card shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <div className="space-y-1">
-                <CardTitle className="text-xl font-bold tracking-tight text-foreground">
-                  {isLoading
-                    ? "Checking Service..."
-                    : data?.service || "Main API"}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-2xl">
+                  {isLoading ? "Checking..." : data?.service || "Main API"}
                 </CardTitle>
-                <CardDescription className="text-xs uppercase tracking-widest font-bold text-muted-foreground">
-                  Primary Infrastructure
-                </CardDescription>
+                <Badge
+                  variant={isError ? "destructive" : "secondary"}
+                  className={cn(
+                    "px-2 py-0.5 text-[10px] uppercase font-bold",
+                    !isError && data?.status === "ok"
+                      ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
+                      : "bg-destructive/10 text-destructive border-destructive/20",
+                  )}
+                >
+                  {isLoading ? "Syncing" : isError ? "Offline" : "Online"}
+                </Badge>
               </div>
-              <Badge
-                variant={isError ? "destructive" : "secondary"}
-                className={cn(
-                  "px-3 py-1 uppercase tracking-widest text-[10px] font-black border",
-                  !isError && data?.status === "ok"
-                    ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
-                    : "bg-destructive/10 text-destructive border-destructive/20",
-                )}
-              >
-                {isLoading ? "Syncing" : isError ? "Offline" : "Online"}
-              </Badge>
+              <CardDescription>
+                Pulsebook API — handles all core healthcare services.
+              </CardDescription>
             </CardHeader>
+
             <CardContent>
-              <div className="pt-4 border-t border-border flex justify-between items-center">
-                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+              <div className="pt-4 border-t flex justify-between items-center text-muted-foreground">
+                <span className="text-[10px] font-bold uppercase tracking-wider">
                   Last Sync
                 </span>
-                <span className="text-xs font-mono font-bold text-foreground/70">
+                <span className="text-xs font-mono">
                   {isLoading
                     ? "--:--:--"
                     : new Date(data?.timestamp || "").toLocaleTimeString()}
