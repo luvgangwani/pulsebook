@@ -37,8 +37,7 @@ Used for managing global UI state (e.g., active theme, sidebar toggle, or curren
 
 ## 3. Styling & UI Components
 
-_To be implemented in the next phase._
-The planned approach is **Tailwind CSS** paired with **shadcn/ui** for accessible, headless components that we can style directly within the repository.
+We use **Tailwind CSS v4** for utility-first styling. The application utilizes a dark-themed, responsive layout built with standard Tailwind classes to maintain high performance and low bundle size.
 
 ## 4. Development Phasing: UI-First vs Auth-First
 
