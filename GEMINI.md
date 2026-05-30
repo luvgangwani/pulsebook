@@ -64,7 +64,11 @@ Appointment - The actual action where a patient books a timeslot with an HCP
 - **Build All**: `pnpm build`
 - **Database Studio**: `pnpm db:studio`
 
-## Development Conventions
+## Planning Workflow
+
+For complex user requests (e.g., architectural changes, cross-cutting features, or ambiguous tasks), the agent should enter **Plan Mode** to draft a design before implementation. 
+
+**Mandatory Step:** Before entering Plan Mode, the agent MUST ask for and receive explicit approval from the user. This allows the user to judge whether the complexity of the request truly warrants a formal planning phase.
 
 ### API (NestJS)
 

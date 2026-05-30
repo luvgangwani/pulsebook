@@ -39,6 +39,8 @@ Used for managing global UI state (e.g., active theme, sidebar toggle, or curren
 
 We use **Tailwind CSS v4** for utility-first styling. The application utilizes a dark-themed, responsive layout built with standard Tailwind classes to maintain high performance and low bundle size.
 
+For every frontend request, always check the **shadcn/ui registry** first. If a suitable component exists (e.g., Card, Badge, Dialog), use it to maintain consistency. If no suitable match is found in the registry, you MUST confirm and get approval from the user before creating any custom UI components.
+
 ## 4. Development Phasing: UI-First vs Auth-First
 
 We have elected to build out core UI pages (search, schedules, dashboards) prior to integrating the full authentication layer.
