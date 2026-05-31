@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   Post,
   Res,
@@ -35,6 +36,11 @@ export class UsersController {
   @Post("register")
   async register(@Body() createUserDto: CreateUserDto) {
     return this.usersService.register(createUserDto);
+  }
+
+  @Get("clinic-admins")
+  async getClinicAdmins() {
+    return this.usersService.getClinicAdmins();
   }
 
   @Post("login")

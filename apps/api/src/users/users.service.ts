@@ -297,5 +297,21 @@ export class UsersService {
       .digest("base64url");
 
     return `${header}.${body}.${signature}`;
-  }
-}
+    }
+
+    async getClinicAdmins() {
+    return this.prisma.user.findMany({
+    where: {
+      role: {
+        name: "CLINIC_ADMIN",
+      },
+    },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+    },
+    });
+    }
+    }
