@@ -11,14 +11,14 @@ export class ClinicLocationsController {
   constructor(private readonly clinicLocationsService: ClinicLocationsService) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard, RoleGuard)
+  // @UseGuards(JwtAuthGuard, RoleGuard)
   @AllowedRoles("ADMIN")
   async getClinicLocations() {
     return this.clinicLocationsService.getClinicLocations();
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard, RoleGuard)
+  // @UseGuards(JwtAuthGuard, RoleGuard)
   @AllowedRoles("ADMIN")
   async createClinicLocation(
     @CurrentUser() currentUser: AuthenticatedUser,
