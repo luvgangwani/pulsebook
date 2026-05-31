@@ -6,7 +6,6 @@ import { Montserrat } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/AppSidebar";
-import { Header } from "@/components/layout/Header";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 const montserrat = Montserrat({
@@ -39,8 +38,7 @@ export default function RootLayout({
                 <div className="flex min-h-screen w-full">
                   <AppSidebar />
                   <SidebarInset className="flex flex-col w-full">
-                    <Header />
-                    <main className="flex-1 pt-16 p-6">
+                    <main className="flex-1 p-6">
                       {children}
                     </main>
                   </SidebarInset>
