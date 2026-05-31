@@ -105,7 +105,7 @@ Use TypeScript everywhere. Follow the existing style:
 - 2-space indentation
 - double quotes in TS/TSX files
 - `PascalCase` for Nest modules and React components
-- `kebab-case` for feature folders such as `src/health/`
+- `kebab-case` for feature folders such as `src/service-health/`
 - If there are any new values that are being used across the `/api` or `/web` apps put them in a `constants.ts` file within the respective directory
 - If there are any mappings/configurations that are being used across the `/api` or `/web` apps put them in a `config.ts` within the respective directory
 - Use `camelCase` for TypeScript-facing names across the repo, including DTO fields, request payloads, response payloads, variables, and object keys

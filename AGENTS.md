@@ -54,7 +54,7 @@ When creating a new API module:
 - `pnpm db:migrate:dev`: create and apply a development migration
 - `pnpm db:studio`: open Prisma Studio
 
-Example: run the healthcheck with `curl http://localhost:3001/api/health`.
+Example: run the healthcheck with `curl http://localhost:3001/api/service-health`.
 
 ## Coding Style & Naming Conventions
 

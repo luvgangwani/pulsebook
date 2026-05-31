@@ -70,7 +70,7 @@ Basic monorepo scaffold with:
 Start the API and call:
 
 ```bash
-curl http://localhost:3001/api/health
+curl http://localhost:3001/api/service-health
 ```
 
 ## PR Review Automation
