@@ -9,6 +9,14 @@ export class ClinicLocationsService {
 
   async getClinicLocations() {
     const clinicLocations = await this.prisma.clinicLocation.findMany({
+      include: {
+        createdByUser: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
       orderBy: {
         createdAt: "desc",
       },
@@ -16,12 +24,16 @@ export class ClinicLocationsService {
 
     return clinicLocations.map((clinicLocation) => ({
       id: clinicLocation.id,
+      name: clinicLocation.name,
       addressLine1: clinicLocation.addressLine1,
       addressLine2: clinicLocation.addressLine2,
       suburb: clinicLocation.suburb,
       state: clinicLocation.state,
       postcode: clinicLocation.postcode,
       createdBy: clinicLocation.createdBy,
+      createdByName: clinicLocation.createdByUser
+        ? `${clinicLocation.createdByUser.firstName} ${clinicLocation.createdByUser.lastName ?? ""}`.trim()
+        : null,
       managedBy: clinicLocation.managedBy,
       createdAt: clinicLocation.createdAt.toISOString(),
       updatedAt: clinicLocation.updatedAt.toISOString(),
@@ -47,6 +59,7 @@ export class ClinicLocationsService {
 
     const clinicLocation = await this.prisma.clinicLocation.create({
       data: {
+        name: createClinicLocationDto.name,
         addressLine1: createClinicLocationDto.addressLine1,
         addressLine2: createClinicLocationDto.addressLine2,
         suburb: createClinicLocationDto.suburb,
@@ -59,6 +72,7 @@ export class ClinicLocationsService {
 
     return {
       id: clinicLocation.id,
+      name: clinicLocation.name,
       addressLine1: clinicLocation.addressLine1,
       addressLine2: clinicLocation.addressLine2,
       suburb: clinicLocation.suburb,

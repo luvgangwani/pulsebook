@@ -116,6 +116,7 @@ model Hcp {
 
 model ClinicLocation {
   id           String   @id @default(cuid())
+  name         String?
   addressLine1 String?  @map("address_line_1")
   addressLine2 String?  @map("address_line_2")
   suburb       String?
