@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { api } from "@/lib/api";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -69,15 +70,62 @@ interface ClinicLocation {
 }
 
 export default function ClinicLocationsPage() {
-  const [locations, setLocations] = useState<ClinicLocation[]>([]);
-  const [admins, setAdmins] = useState<ClinicAdmin[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   /**
-   * react-hook-form's useForm hook is the core of our form management.
+   * TanStack Query - Fetching Clinic Locations
+   * We replace useEffect/useState with useQuery for:
+   * - Caching: Data is reused across the app.
+   * - Automatic re-fetching: Updates in background.
+   * - Built-in states: 'isPending' and 'error' are handled for us.
+   */
+  const {
+    data: locations = [],
+    isPending: loadingLocations,
+    error: locationsError,
+  } = useQuery({
+    queryKey: ["clinic-locations"],
+    queryFn: async () => {
+      const response = await api.get<ClinicLocation[]>("/clinic-locations");
+      return response.data;
+    },
+  });
+
+  /**
+   * TanStack Query - Fetching Clinic Admins
+   */
+  const { data: admins = [] } = useQuery({
+    queryKey: ["clinic-admins"],
+    queryFn: async () => {
+      const response = await api.get<ClinicAdmin[]>("/users/clinic-admins");
+      return response.data;
+    },
+  });
+
+  /**
+   * TanStack Query - Creating a Clinic Location
+   * useMutation handles the side effect of creating data.
+   * We use 'onSuccess' to invalidate the cache, which triggers an automatic 
+   * re-fetch of the locations list.
+   */
+  const createMutation = useMutation({
+    mutationFn: async (data: ClinicFormValues) => {
+      return api.post("/clinic-locations", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["clinic-locations"] });
+      setIsDialogOpen(false);
+      form.reset();
+    },
+    onError: (err) => {
+      console.error("Failed to create clinic:", err);
+      alert("Failed to create clinic location. Please try again.");
+    },
+  });
+
+  /**
+   * react-hook-form management
    * - 'resolver': We use zodResolver to bridge react-hook-form with our Zod schema.
    *   The zodResolver validates the form data against the Zod schema before submission.
    * - 'defaultValues': Sets the initial state of the form fields.
@@ -96,45 +144,12 @@ export default function ClinicLocationsPage() {
     },
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [locationsRes, adminsRes] = await Promise.all([
-          api.get<ClinicLocation[]>("/clinic-locations"),
-          api.get<ClinicAdmin[]>("/users/clinic-admins"),
-        ]);
-        setLocations(locationsRes.data);
-        setAdmins(adminsRes.data);
-      } catch (err) {
-        console.error("Failed to fetch data:", err);
-        setError("Failed to load data. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   /**
    * The onSubmit function is called after react-hook-form successfully validates the form.
    * It receives the validated 'data' object which matches our ClinicFormValues type.
    */
-  const onSubmit = async (data: ClinicFormValues) => {
-    setIsSubmitting(true);
-    try {
-      await api.post("/clinic-locations", data);
-      // Refresh locations list to show the new entry
-      const response = await api.get<ClinicLocation[]>("/clinic-locations");
-      setLocations(response.data);
-      setIsDialogOpen(false);
-      form.reset();
-    } catch (err) {
-      console.error("Failed to create clinic:", err);
-      alert("Failed to create clinic location. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+  const onSubmit = (data: ClinicFormValues) => {
+    createMutation.mutate(data);
   };
 
   const formatAddress = (loc: ClinicLocation) => {
@@ -148,7 +163,7 @@ export default function ClinicLocationsPage() {
     return parts.join(", ");
   };
 
-  if (loading) {
+  if (loadingLocations) {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
@@ -181,14 +196,16 @@ export default function ClinicLocationsPage() {
     );
   }
 
-  if (error) {
+  if (locationsError) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
         <div className="bg-destructive/10 p-4 rounded-full mb-4">
           <MapPin className="h-8 w-8 text-destructive" />
         </div>
         <h2 className="text-2xl font-semibold mb-2">Error Loading Locations</h2>
-        <p className="text-muted-foreground max-w-md">{error}</p>
+        <p className="text-muted-foreground max-w-md">
+          {locationsError instanceof Error ? locationsError.message : "Failed to load clinic locations. Please try again later."}
+        </p>
       </div>
     );
   }
@@ -343,8 +360,8 @@ export default function ClinicLocationsPage() {
                 >
                   Cancel
                 </Button>
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Creating..." : "Create Clinic"}
+                <Button type="submit" disabled={createMutation.isPending}>
+                  {createMutation.isPending ? "Creating..." : "Create Clinic"}
                 </Button>
               </div>
             </form>
