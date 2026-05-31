@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { api } from "@/lib/api";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -62,10 +63,11 @@ export function CreateClinicDialog({ admins }: CreateClinicDialogProps) {
       queryClient.invalidateQueries({ queryKey: ["clinic-locations"] });
       setIsDialogOpen(false);
       form.reset();
+      toast.success("Clinic location created successfully.");
     },
     onError: (err) => {
       console.error("Failed to create clinic:", err);
-      alert("Failed to create clinic location. Please try again.");
+      toast.error("Failed to create clinic location. Please try again.");
     },
   });
 
