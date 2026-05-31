@@ -17,6 +17,11 @@ export class CreateClinicLocationDto {
   @Transform(trimOptionalString)
   @IsOptional()
   @IsString()
+  name?: string;
+
+  @Transform(trimOptionalString)
+  @IsOptional()
+  @IsString()
   addressLine1?: string;
 
   @Transform(trimOptionalString)
