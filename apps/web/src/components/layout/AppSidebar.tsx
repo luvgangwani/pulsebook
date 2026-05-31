@@ -79,6 +79,11 @@ const items = [
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
   const { setTheme, theme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -162,7 +167,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       <Moon className="absolute inset-0 size-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
                     </div>
                     <span className="group-data-[collapsible=icon]:hidden truncate capitalize">
-                      {theme === "system" ? "System" : theme} Theme
+                      {mounted ? (theme === "system" ? "System" : theme) : "System"} Theme
                     </span>
                   </div>
                 </SidebarMenuButton>
