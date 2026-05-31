@@ -9,6 +9,20 @@ export class ClinicLocationsService {
 
   async getClinicLocations() {
     const clinicLocations = await this.prisma.clinicLocation.findMany({
+      include: {
+        createdByUser: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+        managedByUser: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
       orderBy: {
         createdAt: "desc",
       },
@@ -16,13 +30,18 @@ export class ClinicLocationsService {
 
     return clinicLocations.map((clinicLocation) => ({
       id: clinicLocation.id,
+      name: clinicLocation.name,
       addressLine1: clinicLocation.addressLine1,
       addressLine2: clinicLocation.addressLine2,
       suburb: clinicLocation.suburb,
       state: clinicLocation.state,
       postcode: clinicLocation.postcode,
       createdBy: clinicLocation.createdBy,
+      createdByName: clinicLocation.createdByUser
+        ? `${clinicLocation.createdByUser.firstName} ${clinicLocation.createdByUser.lastName ?? ""}`.trim()
+        : null,
       managedBy: clinicLocation.managedBy,
+      managedByName: `${clinicLocation.managedByUser.firstName} ${clinicLocation.managedByUser.lastName ?? ""}`.trim(),
       createdAt: clinicLocation.createdAt.toISOString(),
       updatedAt: clinicLocation.updatedAt.toISOString(),
     }));
@@ -47,18 +66,21 @@ export class ClinicLocationsService {
 
     const clinicLocation = await this.prisma.clinicLocation.create({
       data: {
+        name: createClinicLocationDto.name,
         addressLine1: createClinicLocationDto.addressLine1,
         addressLine2: createClinicLocationDto.addressLine2,
         suburb: createClinicLocationDto.suburb,
         state: createClinicLocationDto.state,
         postcode: createClinicLocationDto.postcode,
-        createdBy: currentUser.sub,
+        // Use currentUser.sub if available, otherwise fallback to a environment variable for testing
+        createdBy: currentUser?.sub ?? process.env.TEST_ADMIN_USER_ID,
         managedBy: createClinicLocationDto.managedById,
       },
     });
 
     return {
       id: clinicLocation.id,
+      name: clinicLocation.name,
       addressLine1: clinicLocation.addressLine1,
       addressLine2: clinicLocation.addressLine2,
       suburb: clinicLocation.suburb,

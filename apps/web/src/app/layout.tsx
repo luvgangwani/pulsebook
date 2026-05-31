@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -44,6 +45,7 @@ export default function RootLayout({
                   </SidebarInset>
                 </div>
               </SidebarProvider>
+              <Toaster />
             </TooltipProvider>
           </QueryProvider>
         </ThemeProvider>

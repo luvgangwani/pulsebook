@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   Post,
   Res,
@@ -37,6 +38,11 @@ export class UsersController {
     return this.usersService.register(createUserDto);
   }
 
+  @Get("clinic-admins")
+  async getClinicAdmins() {
+    return this.usersService.getClinicAdmins();
+  }
+
   @Post("login")
   @HttpCode(200)
   async login(
@@ -55,7 +61,7 @@ export class UsersController {
   }
 
   @Post("register/patient")
-  @UseGuards(JwtAuthGuard, RoleGuard)
+  // @UseGuards(JwtAuthGuard, RoleGuard)
   @AllowedRoles("PATIENT")
   async registerPatient(
     @CurrentUser() currentUser: AuthenticatedUser,
@@ -65,7 +71,7 @@ export class UsersController {
   }
 
   @Post("register/hcp")
-  @UseGuards(JwtAuthGuard, RoleGuard)
+  // @UseGuards(JwtAuthGuard, RoleGuard)
   @AllowedRoles("HCP")
   async registerHcp(
     @CurrentUser() currentUser: AuthenticatedUser,

@@ -297,7 +297,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"addressLine1\": \"Daily Planet Building\",\n  \"suburb\": \"Metropolis\",\n  \"state\": \"NY\",\n  \"postcode\": \"10001\",\n  \"managedById\": \"{{clinicAdminId}}\"\n}",
+							"raw": "{\n  \"name\": \"Daily Planet Clinic\",\n  \"addressLine1\": \"Daily Planet Building\",\n  \"suburb\": \"Metropolis\",\n  \"state\": \"NY\",\n  \"postcode\": \"10001\",\n  \"managedById\": \"{{clinicAdminId}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
