@@ -35,6 +35,7 @@ export interface ClinicLocation {
   createdBy: string | null;
   createdByName: string | null;
   managedBy: string;
+  managedByName: string;
   createdAt: string;
   updatedAt: string;
 }

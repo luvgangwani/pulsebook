@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, User, Calendar } from "lucide-react";
+import { MapPin, User, Calendar, ShieldCheck } from "lucide-react";
 import { format } from "date-fns";
 import { ClinicLocation } from "../types";
 
@@ -44,6 +44,10 @@ export function ClinicLocationCard({ location }: ClinicLocationCardProps) {
           </div>
 
           <div className="pt-4 border-t flex flex-col gap-2">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <ShieldCheck className="h-3 w-3 text-primary" />
+              <span>Managed by: {location.managedByName}</span>
+            </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <User className="h-3 w-3" />
               <span>Created by: {location.createdByName || "System"}</span>

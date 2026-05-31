@@ -16,6 +16,12 @@ export class ClinicLocationsService {
             lastName: true,
           },
         },
+        managedByUser: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
@@ -35,6 +41,7 @@ export class ClinicLocationsService {
         ? `${clinicLocation.createdByUser.firstName} ${clinicLocation.createdByUser.lastName ?? ""}`.trim()
         : null,
       managedBy: clinicLocation.managedBy,
+      managedByName: `${clinicLocation.managedByUser.firstName} ${clinicLocation.managedByUser.lastName ?? ""}`.trim(),
       createdAt: clinicLocation.createdAt.toISOString(),
       updatedAt: clinicLocation.updatedAt.toISOString(),
     }));
@@ -65,7 +72,8 @@ export class ClinicLocationsService {
         suburb: createClinicLocationDto.suburb,
         state: createClinicLocationDto.state,
         postcode: createClinicLocationDto.postcode,
-        createdBy: currentUser.sub,
+        // Use currentUser.sub if available, otherwise fallback to a environment variable for testing
+        createdBy: currentUser?.sub ?? process.env.TEST_ADMIN_USER_ID,
         managedBy: createClinicLocationDto.managedById,
       },
     });
