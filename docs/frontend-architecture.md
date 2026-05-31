@@ -68,3 +68,15 @@ We use a combination of `next-themes`, CSS Variables, and Tailwind CSS to suppor
 ### Component Implementation
 
 A `ModeToggle` component (standard shadcn pattern) provides the user interface for theme selection, interacting with the `useTheme` hook from `next-themes`.
+
+## 6. Accessibility (A11y)
+
+Accessibility is first-class citizen in Pulsebook. All new/existing components MUST include appropriate accessibility attributes (ARIA roles, labels, states) ensure application usable by everyone, including those using assistive technologies.
+
+### General Rules
+
+- **Interactive Elements:** All buttons, links, inputs must have descriptive `aria-label` or `aria-labelledby` if purpose not clear from text.
+- **Icon-Only Buttons:** Buttons containing only icon MUST include `<span className="sr-only">` with descriptive label.
+- **Semantic HTML:** Use semantic tags (`<nav>`, `<main>`, `<header>`, `<footer>`, `<aside>`, etc.) provide structural context.
+- **States:** Use `aria-expanded`, `aria-hidden`, `aria-current`, etc., communicate state of collapsible elements, menus, current nav items.
+- **Keyboard Navigation:** Ensure all interactive elements reachable/usable via keyboard (proper `tabIndex`, focus styles).

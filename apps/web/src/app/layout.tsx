@@ -4,6 +4,9 @@ import QueryProvider from "@/components/providers/QueryProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Montserrat } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/layout/AppSidebar";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -29,7 +32,20 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            <TooltipProvider>
+              <SidebarProvider>
+                <div className="flex min-h-screen w-full">
+                  <AppSidebar />
+                  <SidebarInset className="flex flex-col w-full">
+                    <main className="flex-1 p-6">
+                      {children}
+                    </main>
+                  </SidebarInset>
+                </div>
+              </SidebarProvider>
+            </TooltipProvider>
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>
