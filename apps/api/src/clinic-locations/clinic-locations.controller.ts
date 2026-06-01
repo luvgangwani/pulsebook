@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { AllowedRoles } from "../users/allowed-roles.decorator";
 import { CurrentUser } from "../users/current-user.decorator";
 import { AuthenticatedUser, JwtAuthGuard } from "../users/jwt-auth.guard";
@@ -15,6 +15,13 @@ export class ClinicLocationsController {
   @AllowedRoles("ADMIN")
   async getClinicLocations() {
     return this.clinicLocationsService.getClinicLocations();
+  }
+
+  @Get(":id")
+  // @UseGuards(JwtAuthGuard, RoleGuard)
+  @AllowedRoles("ADMIN")
+  async getClinicLocationById(@Param("id") id: string) {
+    return this.clinicLocationsService.getClinicLocationById(id);
   }
 
   @Post()

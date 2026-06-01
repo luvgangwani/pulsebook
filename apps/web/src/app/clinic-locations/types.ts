@@ -39,3 +39,13 @@ export interface ClinicLocation {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface AssignedHcp {
+  id: string;
+  userId: string;
+  firstName: string;
+  lastName: string | null;
+  email: string;
+  specialityId: number;
+  assignedAt: string;
+}
