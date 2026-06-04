@@ -33,6 +33,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { AddHcpDialog } from "../components/AddHcpDialog";
+import { SetScheduleDialog } from "../components/SetScheduleDialog";
 import Link from "next/link";
 
 export default function ClinicLocationDetailsPage() {
@@ -247,14 +248,12 @@ export default function ClinicLocationDetailsPage() {
                           ))}
                         </div>
                       ) : (
-                        <Link 
-                          href="#" 
-                          className="text-primary hover:underline text-sm font-medium cursor-pointer"
-                          onClick={(e) => e.preventDefault()}
-                        >
-
-                          Set Schedule
-                        </Link>
+                        <SetScheduleDialog
+                          hcpId={hcp.id}
+                          clinicLocationId={location.id}
+                          hcpName={`${hcp.firstName} ${hcp.lastName}`}
+                          clinicName={location.name || "Clinic"}
+                        />
                       )}
                     </TableCell>
                     <TableCell>
