@@ -80,3 +80,4 @@ Accessibility is first-class citizen in Pulsebook. All new/existing components M
 - **Semantic HTML:** Use semantic tags (`<nav>`, `<main>`, `<header>`, `<footer>`, `<aside>`, etc.) provide structural context.
 - **States:** Use `aria-expanded`, `aria-hidden`, `aria-current`, etc., communicate state of collapsible elements, menus, current nav items.
 - **Keyboard Navigation:** Ensure all interactive elements reachable/usable via keyboard (proper `tabIndex`, focus styles).
+- **Cursor State:** All interactive items (buttons, links, selectable items) MUST have `cursor: pointer` to indicate interactivity.

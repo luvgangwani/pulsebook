@@ -43,6 +43,11 @@ export class UsersController {
     return this.usersService.getClinicAdmins();
   }
 
+  @Get("hcps")
+  async getAllHcps() {
+    return this.usersService.getAllHcps();
+  }
+
   @Post("login")
   @HttpCode(200)
   async login(
