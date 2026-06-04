@@ -300,18 +300,46 @@ export class UsersService {
     }
 
     async getClinicAdmins() {
-    return this.prisma.user.findMany({
-    where: {
-      role: {
-        name: "CLINIC_ADMIN",
-      },
-    },
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      email: true,
-    },
-    });
+      return this.prisma.user.findMany({
+        where: {
+          role: {
+            name: "CLINIC_ADMIN",
+          },
+        },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+        },
+      });
+    }
+
+    async getAllHcps() {
+      const hcps = await this.prisma.hcp.findMany({
+        include: {
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+              email: true,
+            },
+          },
+          speciality: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+
+      return hcps.map((hcp) => ({
+        id: hcp.id,
+        firstName: hcp.user.firstName,
+        lastName: hcp.user.lastName,
+        email: hcp.user.email,
+        speciality: hcp.speciality.name,
+      }));
     }
     }
+

@@ -40,6 +40,20 @@ export interface ClinicLocation {
   updatedAt: string;
 }
 
+export type DayOfWeek = 
+  | "MONDAY" 
+  | "TUESDAY" 
+  | "WEDNESDAY" 
+  | "THURSDAY" 
+  | "FRIDAY" 
+  | "SATURDAY" 
+  | "SUNDAY";
+
+export interface HcpSchedule {
+  availableDays: DayOfWeek[];
+  slotDuration: number;
+}
+
 export interface AssignedHcp {
   id: string;
   userId: string;
@@ -48,4 +62,13 @@ export interface AssignedHcp {
   email: string;
   specialityId: number;
   assignedAt: string;
+  schedule: HcpSchedule | null;
+}
+
+export interface Hcp {
+  id: string;
+  firstName: string;
+  lastName: string | null;
+  email: string;
+  speciality: string;
 }

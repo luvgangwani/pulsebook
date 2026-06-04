@@ -4,12 +4,12 @@ import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { ClinicLocation, AssignedHcp } from "../types";
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
+import {
+  Card,
+  CardContent,
+  CardHeader,
   CardTitle,
-  CardDescription
+  CardDescription,
 } from "@/components/ui/card";
 import {
   Table,
@@ -21,25 +21,28 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  MapPin, 
-  User, 
-  Calendar, 
-  ShieldCheck, 
+import {
+  MapPin,
+  User,
+  Calendar,
+  ShieldCheck,
   ArrowLeft,
-  Users
+  Users,
+  Clock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
+import { AddHcpDialog } from "../components/AddHcpDialog";
+import Link from "next/link";
 
 export default function ClinicLocationDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
 
-  const { 
-    data: location, 
+  const {
+    data: location,
     isLoading: loadingLocation,
-    error: locationError 
+    error: locationError,
   } = useQuery({
     queryKey: ["clinic-location", id],
     queryFn: async () => {
@@ -48,13 +51,12 @@ export default function ClinicLocationDetailsPage() {
     },
   });
 
-  const { 
-    data: hcpData, 
-    isLoading: loadingHcps 
-  } = useQuery({
+  const { data: hcpData, isLoading: loadingHcps } = useQuery({
     queryKey: ["clinic-hcps", id],
     queryFn: async () => {
-      const response = await api.get<{ hcps: AssignedHcp[] }>(`/hcps/assigned/${id}`);
+      const response = await api.get<{ hcps: AssignedHcp[] }>(
+        `/hcps/assigned/${id}`,
+      );
       return response.data;
     },
     enabled: !!location,
@@ -69,6 +71,13 @@ export default function ClinicLocationDetailsPage() {
       loc.postcode,
     ].filter(Boolean);
     return parts.join(", ");
+  };
+
+  const formatDays = (days: string[]) => {
+    if (!days || days.length === 0) return "No days set";
+    return days
+      .map((d) => d.charAt(0) + d.slice(1).toLowerCase().substring(0, 2))
+      .join(", ");
   };
 
   if (loadingLocation) {
@@ -98,7 +107,8 @@ export default function ClinicLocationDetailsPage() {
         </div>
         <h2 className="text-2xl font-semibold mb-2">Clinic Not Found</h2>
         <p className="text-muted-foreground mb-6">
-          The clinic location you are looking for does not exist or you do not have permission to view it.
+          The clinic location you are looking for does not exist or you do not
+          have permission to view it.
         </p>
         <Button onClick={() => router.back()} variant="outline">
           <ArrowLeft className="mr-2 h-4 w-4" /> Go Back
@@ -113,21 +123,27 @@ export default function ClinicLocationDetailsPage() {
         <Button onClick={() => router.back()} variant="ghost" size="icon">
           <ArrowLeft className="h-5 w-5" />
         </Button>
-        <h1 className="text-3xl font-bold tracking-tight">{location.name || "Clinic Details"}</h1>
+        <h1 className="text-3xl font-bold tracking-tight">
+          {location.name || "Clinic Details"}
+        </h1>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
         <Card className="md:col-span-2">
           <CardHeader>
             <CardTitle>Information</CardTitle>
-            <CardDescription>General details about this clinic location.</CardDescription>
+            <CardDescription>
+              General details about this clinic location.
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex items-start gap-3">
               <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
               <div>
                 <p className="font-medium">Address</p>
-                <p className="text-muted-foreground">{formatAddress(location)}</p>
+                <p className="text-muted-foreground">
+                  {formatAddress(location)}
+                </p>
               </div>
             </div>
 
@@ -136,7 +152,9 @@ export default function ClinicLocationDetailsPage() {
                 <ShieldCheck className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium">Manager</p>
-                  <p className="text-muted-foreground">{location.managedByName}</p>
+                  <p className="text-muted-foreground">
+                    {location.managedByName}
+                  </p>
                 </div>
               </div>
 
@@ -144,7 +162,9 @@ export default function ClinicLocationDetailsPage() {
                 <User className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium">Created By</p>
-                  <p className="text-muted-foreground">{location.createdByName || "System"}</p>
+                  <p className="text-muted-foreground">
+                    {location.createdByName || "System"}
+                  </p>
                 </div>
               </div>
 
@@ -152,7 +172,9 @@ export default function ClinicLocationDetailsPage() {
                 <Calendar className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium">Created At</p>
-                  <p className="text-muted-foreground">{format(new Date(location.createdAt), "PPPP")}</p>
+                  <p className="text-muted-foreground">
+                    {format(new Date(location.createdAt), "PPPP")}
+                  </p>
                 </div>
               </div>
             </div>
@@ -176,9 +198,14 @@ export default function ClinicLocationDetailsPage() {
       </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Assigned HCPs</CardTitle>
-          <CardDescription>List of healthcare professionals working at this location.</CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <div>
+            <CardTitle>Assigned HCPs</CardTitle>
+            <CardDescription>
+              List of healthcare professionals working at this location.
+            </CardDescription>
+          </div>
+          <AddHcpDialog clinicLocationId={location.id} />
         </CardHeader>
         <CardContent>
           {loadingHcps ? (
@@ -190,7 +217,9 @@ export default function ClinicLocationDetailsPage() {
           ) : !hcpData?.hcps.length ? (
             <div className="text-center py-12 border-2 border-dashed rounded-lg">
               <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">No HCPs assigned to this location yet.</p>
+              <p className="text-muted-foreground">
+                No HCPs assigned to this location yet.
+              </p>
             </div>
           ) : (
             <Table>
@@ -198,6 +227,8 @@ export default function ClinicLocationDetailsPage() {
                 <TableRow>
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
+                  <TableHead>Available Days</TableHead>
+                  <TableHead>Slot Duration</TableHead>
                   <TableHead>Assigned At</TableHead>
                 </TableRow>
               </TableHeader>
@@ -208,7 +239,44 @@ export default function ClinicLocationDetailsPage() {
                       {hcp.firstName} {hcp.lastName}
                     </TableCell>
                     <TableCell>{hcp.email}</TableCell>
-                    <TableCell>{format(new Date(hcp.assignedAt), "PP")}</TableCell>
+                    <TableCell>
+                      {hcp.schedule ? (
+                        <div className="flex flex-wrap gap-1">
+                          {hcp.schedule.availableDays.map((day) => (
+                            <Badge
+                              key={day}
+                              variant="outline"
+                              className="text-[10px] px-1.5 py-0"
+                            >
+                              {day.charAt(0) +
+                                day.slice(1).toLowerCase().substring(0, 2)}
+                            </Badge>
+                          ))}
+                        </div>
+                      ) : (
+                        <Link 
+                          href="#" 
+                          className="text-primary hover:underline text-sm font-medium cursor-pointer"
+                          onClick={(e) => e.preventDefault()}
+                        >
+
+                          Set Schedule
+                        </Link>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {hcp.schedule ? (
+                        <div className="flex items-center gap-1.5 text-sm">
+                          <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                          {hcp.schedule.slotDuration} min
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground text-sm">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {format(new Date(hcp.assignedAt), "PP")}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

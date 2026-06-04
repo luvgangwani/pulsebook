@@ -16,7 +16,7 @@ export class HcpClinicLocationsService {
 
   async createHcpClinicLocation(
     createHcpClinicLocationDto: CreateHcpClinicLocationDto,
-    currentUser: AuthenticatedUser,
+    currentUser?: AuthenticatedUser,
   ) {
     const [hcp, clinicLocation] = await Promise.all([
       this.prisma.hcp.findUnique({
@@ -37,6 +37,7 @@ export class HcpClinicLocationsService {
 
     // Restriction: CLINIC_ADMIN only for their clinic
     if (
+      currentUser &&
       currentUser.roleName === "CLINIC_ADMIN" &&
       clinicLocation.managedBy !== currentUser.sub
     ) {
@@ -140,6 +141,12 @@ export class HcpClinicLocationsService {
                 user: true,
               },
             },
+            schedule: {
+              select: {
+                availableDays: true,
+                slotDuration: true,
+              },
+            },
           },
           orderBy: {
             createdAt: "desc",
@@ -171,6 +178,12 @@ export class HcpClinicLocationsService {
         email: mapping.hcp.user.email,
         specialityId: mapping.hcp.specialityId,
         assignedAt: mapping.createdAt.toISOString(),
+        schedule: mapping.schedule
+          ? {
+              availableDays: mapping.schedule.availableDays,
+              slotDuration: mapping.schedule.slotDuration,
+            }
+          : null,
       })),
     };
   }
