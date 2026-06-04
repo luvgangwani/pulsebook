@@ -73,13 +73,6 @@ export default function ClinicLocationDetailsPage() {
     return parts.join(", ");
   };
 
-  const formatDays = (days: string[]) => {
-    if (!days || days.length === 0) return "No days set";
-    return days
-      .map((d) => d.charAt(0) + d.slice(1).toLowerCase().substring(0, 2))
-      .join(", ");
-  };
-
   if (loadingLocation) {
     return (
       <div className="space-y-6">
