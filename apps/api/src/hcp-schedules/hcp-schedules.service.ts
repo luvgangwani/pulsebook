@@ -20,7 +20,7 @@ export class HcpSchedulesService {
 
   async createHcpSchedule(
     createHcpScheduleDto: CreateHcpScheduleDto,
-    user: AuthenticatedUser,
+    user?: AuthenticatedUser,
   ) {
     const hcpClinicLocation = await this.prisma.hcpClinicLocation.findUnique({
       where: {
@@ -40,6 +40,7 @@ export class HcpSchedulesService {
 
     // Restriction: CLINIC_ADMIN only for their clinic
     if (
+      user &&
       user.roleName === "CLINIC_ADMIN" &&
       hcpClinicLocation.clinicLocation.managedBy !== user.sub
     ) {
@@ -54,7 +55,7 @@ export class HcpSchedulesService {
           hcpClinicLocationId: hcpClinicLocation.id,
           availableDays: createHcpScheduleDto.availableDays,
           slotDuration: createHcpScheduleDto.slotDuration,
-          createdBy: user.sub,
+          createdBy: user?.sub,
         },
       });
 
@@ -130,7 +131,7 @@ export class HcpSchedulesService {
 
   async getSchedulesByClinicLocationId(
     clinicLocationId: string,
-    user: AuthenticatedUser,
+    user?: AuthenticatedUser,
   ) {
     if (!clinicLocationId || clinicLocationId.trim() === "") {
       throw new BadRequestException("clinicLocationId is required.");
@@ -146,6 +147,7 @@ export class HcpSchedulesService {
 
     // Restriction: CLINIC_ADMIN only for their clinic
     if (
+      user &&
       user.roleName === "CLINIC_ADMIN" &&
       clinicLocation.managedBy !== user.sub
     ) {
