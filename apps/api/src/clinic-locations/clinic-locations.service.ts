@@ -47,6 +47,48 @@ export class ClinicLocationsService {
     }));
   }
 
+  async getClinicLocationById(id: string) {
+    const clinicLocation = await this.prisma.clinicLocation.findUnique({
+      where: { id },
+      include: {
+        createdByUser: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+        managedByUser: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    if (!clinicLocation) {
+      throw new NotFoundException(`Clinic location with ID ${id} not found`);
+    }
+
+    return {
+      id: clinicLocation.id,
+      name: clinicLocation.name,
+      addressLine1: clinicLocation.addressLine1,
+      addressLine2: clinicLocation.addressLine2,
+      suburb: clinicLocation.suburb,
+      state: clinicLocation.state,
+      postcode: clinicLocation.postcode,
+      createdBy: clinicLocation.createdBy,
+      createdByName: clinicLocation.createdByUser
+        ? `${clinicLocation.createdByUser.firstName} ${clinicLocation.createdByUser.lastName ?? ""}`.trim()
+        : null,
+      managedBy: clinicLocation.managedBy,
+      managedByName: `${clinicLocation.managedByUser.firstName} ${clinicLocation.managedByUser.lastName ?? ""}`.trim(),
+      createdAt: clinicLocation.createdAt.toISOString(),
+      updatedAt: clinicLocation.updatedAt.toISOString(),
+    };
+  }
+
   async createClinicLocation(
     currentUser: AuthenticatedUser,
     createClinicLocationDto: CreateClinicLocationDto,
