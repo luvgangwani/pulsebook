@@ -5,8 +5,6 @@ import {
   Calendar,
   MapPin,
   Users,
-  Clock,
-  LayoutGrid,
   Activity,
   User,
   LogOut,
@@ -53,16 +51,6 @@ const items = [
     title: "HCPs",
     url: "/hcps",
     icon: Users,
-  },
-  {
-    title: "Schedules",
-    url: "/schedules",
-    icon: Clock,
-  },
-  {
-    title: "Slots",
-    url: "/slots",
-    icon: LayoutGrid,
   },
   {
     title: "Profile",
