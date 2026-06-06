@@ -67,17 +67,28 @@ export class SlotsService {
     this.logger.log("Weekly slot generation completed.");
   }
 
+  /**
+   * Mid-week sync: Updates slots from 'today' until the end of the current week (Sunday).
+   * Called when HCP updates available days.
+   */
   async syncSlotsForRemainderOfWeek(schedule: any) {
     const today = new Date();
+    
+    // Iterate from today for up to 7 days, but stop if we hit next Monday.
     for (let i = 0; i < 7; i++) {
       const date = new Date();
       date.setDate(today.getDate() + i);
+      
+      // Stop at next Monday: This function only handles the 'remainder' of the current week bucket.
+      // Next Monday's slots will be handled by the weekly cron job.
       if (i > 0 && date.getDay() === 1) break;
 
       const dayOfWeek = this.getDayOfWeekEnum(date);
       if (schedule.availableDays.includes(dayOfWeek)) {
+        // Day added: Create/Sync slots for this day.
         await this.syncSlotsForSchedule(schedule, date);
       } else {
+        // Day removed: Clean up unappointed slots.
         await this.deleteUnappointedSlotsForDate(schedule.id, date);
       }
     }
