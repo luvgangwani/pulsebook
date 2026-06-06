@@ -154,6 +154,7 @@ model HcpSchedule {
   hcpClinicLocationId String      @unique @map("hcp_clinic_location_id")
   availableDays       DayOfWeek[] @map("available_days")
   slotDuration        Int         @map("slot_duration")
+  pendingSlotDuration Int?        @map("pending_slot_duration")
   createdBy           String?     @map("created_by")
   createdAt           DateTime    @default(now()) @map("created_at")
   updatedAt           DateTime    @updatedAt @map("updated_at")

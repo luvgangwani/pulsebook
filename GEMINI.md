@@ -126,3 +126,4 @@ Prefer small modules with explicit exports. Keep Next route files inside `src/ap
 | API Endpoints         | ./docs/api-endpoints.md         |
 | Roles and permissions | ./docs/roles-and-permissions.md |
 | Frontend Architecture | ./docs/frontend-architecture.md |
+| Slot Creation Logic   | ./docs/slot-creation-logic.md   |
