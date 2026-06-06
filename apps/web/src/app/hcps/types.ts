@@ -8,13 +8,13 @@ export interface Hcp {
   updatedAt: string;
 }
 
-export type DayOfWeek = 
-  | "MONDAY" 
-  | "TUESDAY" 
-  | "WEDNESDAY" 
-  | "THURSDAY" 
-  | "FRIDAY" 
-  | "SATURDAY" 
+export type DayOfWeek =
+  | "MONDAY"
+  | "TUESDAY"
+  | "WEDNESDAY"
+  | "THURSDAY"
+  | "FRIDAY"
+  | "SATURDAY"
   | "SUNDAY";
 
 export interface HcpSchedule {
