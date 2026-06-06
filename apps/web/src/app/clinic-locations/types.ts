@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { DayOfWeek, HcpSchedule } from "@/types";
 
 /**
  * Zod is used to define a strict validation schema for our form.
@@ -38,20 +39,6 @@ export interface ClinicLocation {
   managedByName: string;
   createdAt: string;
   updatedAt: string;
-}
-
-export type DayOfWeek = 
-  | "MONDAY" 
-  | "TUESDAY" 
-  | "WEDNESDAY" 
-  | "THURSDAY" 
-  | "FRIDAY" 
-  | "SATURDAY" 
-  | "SUNDAY";
-
-export interface HcpSchedule {
-  availableDays: DayOfWeek[];
-  slotDuration: number;
 }
 
 export interface AssignedHcp {

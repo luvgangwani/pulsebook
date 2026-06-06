@@ -87,9 +87,11 @@ export class HcpClinicLocationsService {
       where: { id: normalizedHcpId },
       include: {
         user: true,
+        speciality: true,
         clinicLocations: {
           include: {
             clinicLocation: true,
+            schedule: true,
           },
           orderBy: {
             createdAt: "desc",
@@ -109,9 +111,13 @@ export class HcpClinicLocationsService {
         firstName: hcp.user.firstName,
         lastName: hcp.user.lastName,
         email: hcp.user.email,
+        speciality: hcp.speciality.name,
+        createdAt: hcp.createdAt.toISOString(),
+        updatedAt: hcp.updatedAt.toISOString(),
       },
       clinicLocations: hcp.clinicLocations.map((mapping) => ({
         id: mapping.clinicLocation.id,
+        name: mapping.clinicLocation.name,
         addressLine1: mapping.clinicLocation.addressLine1,
         addressLine2: mapping.clinicLocation.addressLine2,
         suburb: mapping.clinicLocation.suburb,
@@ -120,6 +126,12 @@ export class HcpClinicLocationsService {
         createdBy: mapping.clinicLocation.createdBy,
         managedBy: mapping.clinicLocation.managedBy,
         assignedAt: mapping.createdAt.toISOString(),
+        schedule: mapping.schedule
+          ? {
+              availableDays: mapping.schedule.availableDays,
+              slotDuration: mapping.schedule.slotDuration,
+            }
+          : null,
       })),
     };
   }
