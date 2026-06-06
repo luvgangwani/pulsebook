@@ -108,18 +108,6 @@ export class UsersService {
       throw new UnauthorizedException(PASSWORD_LOGIN_FAILURE_MESSAGE);
     }
 
-    if (user.role.name === "HCP") {
-      const hcp = await this.prisma.hcp.findUnique({
-        where: { userId: user.id },
-      });
-      if (hcp) {
-        // Trigger slot generation asynchronously
-        this.slotsService.generateSlotsForToday(hcp.id).catch((err) => {
-          console.error(`Failed to generate slots for HCP ${hcp.id}:`, err);
-        });
-      }
-    }
-
     return {
       accessToken: this.createAccessToken({
         sub: user.id,

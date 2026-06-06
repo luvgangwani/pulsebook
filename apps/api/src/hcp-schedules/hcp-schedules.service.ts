@@ -59,14 +59,6 @@ export class HcpSchedulesService {
         },
       });
 
-      // Trigger slot generation if today is in the available days
-      const today = new Date();
-      if (schedule.availableDays.includes(this.slotsService.getDayOfWeekEnum(today))) {
-        this.slotsService.syncSlotsForSchedule(schedule, today).catch((err) => {
-          console.error(`Failed to sync slots for schedule ${schedule.id}:`, err);
-        });
-      }
-
       return {
         id: schedule.id,
         hcpClinicLocationId: schedule.hcpClinicLocationId,
@@ -123,6 +115,7 @@ export class HcpSchedulesService {
       },
       availableDays: schedule.availableDays,
       slotDuration: schedule.slotDuration,
+      pendingSlotDuration: schedule.pendingSlotDuration,
       createdBy: schedule.createdBy,
       createdAt: schedule.createdAt.toISOString(),
       updatedAt: schedule.updatedAt.toISOString(),
@@ -187,9 +180,65 @@ export class HcpSchedulesService {
       },
       availableDays: schedule.availableDays,
       slotDuration: schedule.slotDuration,
+      pendingSlotDuration: schedule.pendingSlotDuration,
       createdBy: schedule.createdBy,
       createdAt: schedule.createdAt.toISOString(),
       updatedAt: schedule.updatedAt.toISOString(),
     }));
+  }
+
+  async updateHcpSchedule(
+    id: string,
+    updateHcpScheduleDto: any,
+    user?: AuthenticatedUser,
+  ) {
+    const schedule = await this.prisma.hcpSchedule.findUnique({
+      where: { id },
+      include: {
+        hcpClinicLocation: {
+          include: {
+            clinicLocation: true,
+          },
+        },
+      },
+    });
+
+    if (!schedule) {
+      throw new NotFoundException("Schedule not found.");
+    }
+
+    // Restriction: CLINIC_ADMIN only for their clinic
+    if (
+      user &&
+      user.roleName === "CLINIC_ADMIN" &&
+      schedule.hcpClinicLocation.clinicLocation.managedBy !== user.sub
+    ) {
+      throw new ForbiddenException(
+        "You can only update schedules for your own clinic locations.",
+      );
+    }
+
+    const data: Prisma.HcpScheduleUpdateInput = {};
+
+    if (updateHcpScheduleDto.availableDays) {
+      data.availableDays = updateHcpScheduleDto.availableDays;
+    }
+
+    if (updateHcpScheduleDto.slotDuration) {
+      // Store in pending for next week
+      data.pendingSlotDuration = updateHcpScheduleDto.slotDuration;
+    }
+
+    const updatedSchedule = await this.prisma.hcpSchedule.update({
+      where: { id },
+      data,
+    });
+
+    // If availableDays changed, sync for the remainder of the week
+    if (updateHcpScheduleDto.availableDays) {
+      await this.slotsService.syncSlotsForRemainderOfWeek(updatedSchedule);
+    }
+
+    return updatedSchedule;
   }
 }

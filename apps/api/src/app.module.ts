@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { ScheduleModule } from "@nestjs/schedule";
 import { AppointmentsModule } from "./appointments/appointments.module";
 import { ClinicLocationsModule } from "./clinic-locations/clinic-locations.module";
 import { HealthModule } from "./service-health/health.module";
@@ -9,6 +10,7 @@ import { UsersModule } from "./users/users.module";
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     HealthModule,
     UsersModule,
     ClinicLocationsModule,
