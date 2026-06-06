@@ -9,15 +9,23 @@ export class SlotsService {
 
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Weekly Cron Job: Runs every Monday at 00:00.
+   * 1. Promotes 'pendingSlotDuration' to 'slotDuration' if set.
+   * 2. Generates/Syncs slots for the entire upcoming week (Mon-Sun).
+   */
   @Cron("0 0 * * 1")
   async handleWeeklySlotGeneration() {
     this.logger.log("Starting weekly slot generation...");
-    const schedules = await this.prisma.hcpSchedule.findMany();
+    
+    // NOTE: Casting to any[] as a workaround for stale Prisma types in monorepo environment.
+    // Ensure 'pendingSlotDuration' exists in schema.prisma and types are regenerated.
+    const schedules = (await this.prisma.hcpSchedule.findMany()) as any[];
 
     for (const schedule of schedules) {
       let currentDuration = schedule.slotDuration;
 
-      // Handle deferred duration change
+      // Handle deferred duration change: If a pending duration exists, it's time to make it active.
       if (schedule.pendingSlotDuration) {
         currentDuration = schedule.pendingSlotDuration;
         await this.prisma.hcpSchedule.update({
@@ -27,20 +35,27 @@ export class SlotsService {
             pendingSlotDuration: null,
           },
         });
+        this.logger.log(`Promoted pending duration ${currentDuration} for schedule ${schedule.id}`);
       }
 
-      // Generate slots for Mon-Sun of the current week
+      // Generate slots for Mon-Sun of the current week.
       const today = new Date();
-      // Calculate Monday of the current week
-      const day = today.getDay();
+      
+      // Calculate the Date for Monday of the current week.
+      // RATIONALE: We anchor to Monday to ensure a consistent Mon-Sun synchronization bucket.
+      // This prevents skipping days if the cron job is delayed or manually triggered mid-week.
+      const day = today.getDay(); // 0 is Sunday, 1 is Monday...
+      // If today is Sunday (0), we go back 6 days. Otherwise, we go back (day - 1) days.
       const diff = today.getDate() - day + (day === 0 ? -6 : 1);
       const monday = new Date(new Date(today).setDate(diff));
 
+      // Iterate through all 7 days of the week (Monday to Sunday).
       for (let i = 0; i < 7; i++) {
         const date = new Date(monday);
         date.setDate(monday.getDate() + i);
         const dayOfWeek = this.getDayOfWeekEnum(date);
 
+        // Only sync slots if the day is marked as available in the HCP's schedule.
         if (schedule.availableDays.includes(dayOfWeek)) {
           await this.syncSlotsForSchedule(
             { ...schedule, slotDuration: currentDuration },
