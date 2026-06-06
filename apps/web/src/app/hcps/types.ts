@@ -1,3 +1,5 @@
+import { DayOfWeek, HcpSchedule } from "@/types";
+
 export interface Hcp {
   id: string;
   firstName: string;
@@ -6,20 +8,6 @@ export interface Hcp {
   speciality: string;
   createdAt: string;
   updatedAt: string;
-}
-
-export type DayOfWeek =
-  | "MONDAY"
-  | "TUESDAY"
-  | "WEDNESDAY"
-  | "THURSDAY"
-  | "FRIDAY"
-  | "SATURDAY"
-  | "SUNDAY";
-
-export interface HcpSchedule {
-  availableDays: DayOfWeek[];
-  slotDuration: number;
 }
 
 export interface AssignedClinicLocation {
