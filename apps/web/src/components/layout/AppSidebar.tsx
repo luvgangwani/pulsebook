@@ -38,7 +38,7 @@ import {
 
 const items = [
   {
-    title: "Appointments",
+    title: "My Appointments",
     url: "/appointments",
     icon: Calendar,
   },

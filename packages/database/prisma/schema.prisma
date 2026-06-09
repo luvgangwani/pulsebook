@@ -40,6 +40,7 @@ model User {
   createdClinicLocations ClinicLocation[] @relation("ClinicLocationCreator")
   managedClinicLocations ClinicLocation[] @relation("ClinicLocationManager")
   createdHcpSchedules    HcpSchedule[]    @relation("HcpScheduleCreator")
+  createdAppointments    Appointment[]    @relation("AppointmentCreator")
 
   @@map("user")
 }
@@ -185,12 +186,14 @@ model Appointment {
   id         String            @id @default(cuid())
   slotId     String            @map("slot_id")
   patientId  String            @map("patient_id")
+  createdBy  String?           @map("created_by")
   status     AppointmentStatus
   createdAt  DateTime          @default(now()) @map("created_at")
   updatedAt  DateTime          @updatedAt @map("updated_at")
 
   slot      Slot    @relation(fields: [slotId], references: [id])
   patient   Patient @relation(fields: [patientId], references: [id])
+  creator   User?   @relation("AppointmentCreator", fields: [createdBy], references: [id])
 
   @@map("appointment")
 }
