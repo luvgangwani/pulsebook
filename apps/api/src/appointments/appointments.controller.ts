@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UseGuards,
 } from "@nestjs/common";
 import { AllowedRoles } from "../users/allowed-roles.decorator";
@@ -31,8 +32,11 @@ export class AppointmentsController {
   @Get()
   // @UseGuards(JwtAuthGuard, RoleGuard)
   @AllowedRoles("ADMIN", "PATIENT", "HCP", "CLINIC_ADMIN")
-  async getAppointments(@CurrentUser() user: AuthenticatedUser) {
-    return this.appointmentsService.getAppointments(user);
+  async getAppointments(
+    @CurrentUser() user: AuthenticatedUser,
+    @Query("type") type?: string,
+  ) {
+    return this.appointmentsService.getAppointments(user, type);
   }
 
   @Get(":id")
