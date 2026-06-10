@@ -1,16 +1,44 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Activity } from "lucide-react";
+import { Activity, Loader2 } from "lucide-react";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
 
 export default function LoginPage() {
-  const handleSubmit = (e: React.FormEvent) => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // API call will be added later
-    console.log("Login submitted");
+    setIsLoading(true);
+
+    try {
+      await api.post("/users/login", formData);
+      toast.success("Login successful!");
+      router.push("/");
+    } catch (error: any) {
+      console.error("Login failed:", error);
+      const message =
+        error.response?.data?.message || "Invalid email or password";
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
   return (
@@ -32,17 +60,32 @@ export default function LoginPage() {
                 id="email"
                 type="email"
                 placeholder="m@example.com"
+                value={formData.email}
+                onChange={handleChange}
                 required
               />
             </div>
             <div className="grid gap-2 mb-4">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" required />
+              <Input
+                id="password"
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
             </div>
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full">
-              Sign in
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                "Sign in"
+              )}
             </Button>
           </CardFooter>
         </form>

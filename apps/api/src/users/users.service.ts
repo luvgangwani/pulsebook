@@ -114,6 +114,8 @@ export class UsersService {
         email: user.email,
         roleId: user.roleId,
         roleName: user.role.name,
+        firstName: user.firstName ?? "",
+        lastName: user.lastName ?? "",
       }),
       tokenType: "Bearer",
       email: user.email,
@@ -261,6 +263,8 @@ export class UsersService {
     email: string;
     roleId: number;
     roleName: string;
+    firstName: string;
+    lastName: string;
   }) {
     const nowInSeconds = Math.floor(Date.now() / 1000);
     const secret = process.env.JWT_SECRET;
