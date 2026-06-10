@@ -66,7 +66,7 @@ export class UsersController {
   }
 
   @Post("register/patient")
-  // @UseGuards(JwtAuthGuard, RoleGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @AllowedRoles("PATIENT")
   async registerPatient(
     @CurrentUser() currentUser: AuthenticatedUser,
@@ -76,7 +76,7 @@ export class UsersController {
   }
 
   @Post("register/hcp")
-  // @UseGuards(JwtAuthGuard, RoleGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @AllowedRoles("HCP")
   async registerHcp(
     @CurrentUser() currentUser: AuthenticatedUser,
