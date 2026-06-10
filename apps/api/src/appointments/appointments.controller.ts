@@ -20,7 +20,7 @@ export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
   @Post()
-  // @UseGuards(JwtAuthGuard, RoleGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @AllowedRoles("ADMIN", "PATIENT", "HCP", "CLINIC_ADMIN")
   async createAppointment(
     @Body() createAppointmentDto: CreateAppointmentDto,
@@ -30,7 +30,7 @@ export class AppointmentsController {
   }
 
   @Get()
-  // @UseGuards(JwtAuthGuard, RoleGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @AllowedRoles("ADMIN", "PATIENT", "HCP", "CLINIC_ADMIN")
   async getAppointments(
     @CurrentUser() user: AuthenticatedUser,
@@ -40,7 +40,7 @@ export class AppointmentsController {
   }
 
   @Get(":id")
-  // @UseGuards(JwtAuthGuard, RoleGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @AllowedRoles("ADMIN", "PATIENT", "HCP", "CLINIC_ADMIN")
   async getAppointment(
     @Param("id") id: string,

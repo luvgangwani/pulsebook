@@ -14,7 +14,7 @@ export class HcpClinicLocationsController {
   ) {}
 
   @Post("hcp-clinic-locations")
-  // @UseGuards(JwtAuthGuard, RoleGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @AllowedRoles("ADMIN", "CLINIC_ADMIN")
   async createHcpClinicLocation(
     @Body() createHcpClinicLocationDto: CreateHcpClinicLocationDto,
@@ -27,13 +27,13 @@ export class HcpClinicLocationsController {
   }
 
   @Get("clinic-locations/assigned/:hcpId")
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async getClinicLocationsAssignedToHcp(@Param("hcpId") hcpId: string) {
     return this.hcpClinicLocationsService.getClinicLocationsAssignedToHcp(hcpId);
   }
 
   @Get("hcps/assigned/:clinicLocationId")
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async getHcpsAssignedToClinicLocation(
     @Param("clinicLocationId") clinicLocationId: string,
   ) {
