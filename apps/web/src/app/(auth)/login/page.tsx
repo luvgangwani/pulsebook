@@ -25,7 +25,7 @@ export default function LoginPage() {
     try {
       await api.post("/users/login", formData);
       toast.success("Login successful!");
-      router.push("/");
+      router.push("/home");
     } catch (error: any) {
       console.error("Login failed:", error);
       const message =
