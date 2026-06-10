@@ -31,5 +31,9 @@ Finish a standard git delivery flow: inspect changes, commit them, push the curr
 
 - Default PR base branch to `main` unless the repo or user says otherwise.
 - Use a concise PR title aligned with the commit or the user request.
-- Keep the PR body short: summary and verification.
+- PR body MUST include these sections:
+  - **Summary**: Brief summary of the change.
+  - **Setup or Migration Steps**: Any setup or migration steps required.
+  - **Linked Issue or Task Reference**: Linked issue or task reference when applicable.
+  - **Screenshots**: Screenshots for visible frontend changes.
 - If the branch already has an open PR, do not create a duplicate PR.

@@ -14,7 +14,7 @@ import { api } from "@/lib/api";
 import { toast } from "sonner";
 
 const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z.email("Invalid email address"),
   password: z.string().min(1, "Password is required"),
 });
 
@@ -76,7 +76,9 @@ export default function LoginPage() {
                 className={errors.email ? "border-destructive" : ""}
               />
               {errors.email && (
-                <p className="text-xs text-destructive">{errors.email.message}</p>
+                <p className="text-xs text-destructive">
+                  {errors.email.message}
+                </p>
               )}
             </div>
             <div className="grid gap-2 mb-4">
