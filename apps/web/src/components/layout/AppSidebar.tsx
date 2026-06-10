@@ -26,9 +26,11 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -67,12 +69,24 @@ const items = [
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
+  const router = useRouter();
   const { setTheme, theme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await api.post("/users/logout");
+      toast.success("Logged out successfully");
+      router.push("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      toast.error("Failed to logout");
+    }
+  };
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -98,28 +112,42 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     size="lg"
                     className="relative group-data-[collapsible=icon]:px-0 hover:bg-transparent active:bg-transparent data-[active=true]:bg-transparent"
                   >
-                    <Link
-                      href={item.url as any}
-                      className={cn(
-                        "flex items-center w-full gap-2 transition-all duration-300 rounded-md group-data-[collapsible=icon]:justify-center",
-                        item.variant === "destructive"
-                          ? "text-red-500 hover:text-red-600 bg-red-50 dark:bg-red-950/30"
-                          : "hover:text-primary",
-                        "active:scale-95",
-                        pathname === item.url
-                          ? item.variant === "destructive"
-                            ? "text-red-600 font-bold ring-1 ring-red-500"
-                            : "text-primary font-bold"
-                          : item.variant === "destructive"
-                            ? "text-red-500"
-                            : "text-muted-foreground",
-                      )}
-                    >
-                      <item.icon className="shrink-0 transition-transform duration-300 group-hover:scale-110" />
-                      <span className="group-data-[collapsible=icon]:hidden truncate">
-                        {item.title}
-                      </span>
-                    </Link>
+                    {item.title === "Logout" ? (
+                      <button
+                        onClick={handleLogout}
+                        className={cn(
+                          "flex items-center w-full gap-2 transition-all duration-300 rounded-md group-data-[collapsible=icon]:justify-center text-red-500 hover:text-red-600 bg-red-50 dark:bg-red-950/30 active:scale-95",
+                        )}
+                      >
+                        <item.icon className="shrink-0 transition-transform duration-300 group-hover:scale-110" />
+                        <span className="group-data-[collapsible=icon]:hidden truncate">
+                          {item.title}
+                        </span>
+                      </button>
+                    ) : (
+                      <Link
+                        href={item.url as any}
+                        className={cn(
+                          "flex items-center w-full gap-2 transition-all duration-300 rounded-md group-data-[collapsible=icon]:justify-center",
+                          item.variant === "destructive"
+                            ? "text-red-500 hover:text-red-600 bg-red-50 dark:bg-red-950/30"
+                            : "hover:text-primary",
+                          "active:scale-95",
+                          pathname === item.url
+                            ? item.variant === "destructive"
+                              ? "text-red-600 font-bold ring-1 ring-red-500"
+                              : "text-primary font-bold"
+                            : item.variant === "destructive"
+                              ? "text-red-500"
+                              : "text-muted-foreground",
+                        )}
+                      >
+                        <item.icon className="shrink-0 transition-transform duration-300 group-hover:scale-110" />
+                        <span className="group-data-[collapsible=icon]:hidden truncate">
+                          {item.title}
+                        </span>
+                      </Link>
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
