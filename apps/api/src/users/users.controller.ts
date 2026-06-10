@@ -65,6 +65,16 @@ export class UsersController {
     return loginResponse;
   }
 
+  @Post("logout")
+  @HttpCode(200)
+  async logout(@Res({ passthrough: true }) response: CookieResponse) {
+    response.cookie(ACCESS_TOKEN_COOKIE_NAME, "", {
+      ...ACCESS_TOKEN_COOKIE_OPTIONS,
+      maxAge: 0,
+    });
+    return { message: "Logged out successfully" };
+  }
+
   @Post("register/patient")
   @UseGuards(JwtAuthGuard, RoleGuard)
   @AllowedRoles("PATIENT")

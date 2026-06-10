@@ -25,6 +25,8 @@ export type AuthenticatedUser = {
   email: string;
   roleId: number;
   roleName: string;
+  firstName: string;
+  lastName: string;
 };
 
 @Injectable()
@@ -108,7 +110,9 @@ export class JwtAuthGuard implements CanActivate {
       typeof payload.sub !== "string" ||
       typeof payload.email !== "string" ||
       typeof payload.roleId !== "number" ||
-      typeof payload.roleName !== "string"
+      typeof payload.roleName !== "string" ||
+      typeof payload.firstName !== "string" ||
+      typeof payload.lastName !== "string"
     ) {
       throw new UnauthorizedException(INVALID_ACCESS_TOKEN_MESSAGE);
     }
@@ -122,6 +126,8 @@ export class JwtAuthGuard implements CanActivate {
       email: payload.email,
       roleId: payload.roleId,
       roleName: payload.roleName,
+      firstName: payload.firstName,
+      lastName: payload.lastName,
     };
   }
 }
