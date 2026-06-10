@@ -21,7 +21,7 @@ export class HcpSchedulesController {
   constructor(private readonly hcpSchedulesService: HcpSchedulesService) {}
 
   @Post()
-  // @UseGuards(JwtAuthGuard, RoleGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @AllowedRoles("ADMIN", "CLINIC_ADMIN", "HCP")
   async createHcpSchedule(
     @Body() createHcpScheduleDto: CreateHcpScheduleDto,
@@ -34,7 +34,7 @@ export class HcpSchedulesController {
   }
 
   @Patch(":id")
-  // @UseGuards(JwtAuthGuard, RoleGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @AllowedRoles("ADMIN", "CLINIC_ADMIN", "HCP")
   async updateHcpSchedule(
     @Param("id") id: string,
@@ -49,14 +49,14 @@ export class HcpSchedulesController {
   }
 
   @Get("hcp/:hcpId")
-  // @UseGuards(JwtAuthGuard, RoleGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @AllowedRoles("ADMIN", "HCP")
   async getSchedulesByHcpId(@Param("hcpId") hcpId: string) {
     return this.hcpSchedulesService.getSchedulesByHcpId(hcpId);
   }
 
   @Get("clinic-location/:clinicLocationId")
-  // @UseGuards(JwtAuthGuard, RoleGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @AllowedRoles("ADMIN", "CLINIC_ADMIN")
   async getSchedulesByClinicLocationId(
     @Param("clinicLocationId") clinicLocationId: string,
