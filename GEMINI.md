@@ -26,6 +26,33 @@ Appointment - The actual action where a patient books a timeslot with an HCP
 - **Database**: Prisma ORM, PostgreSQL.
 - **Package Management**: pnpm.
 
+## Mandatory Libraries & Patterns
+
+To maintain codebase consistency, all new code MUST strictly adhere to these established libraries and patterns.
+
+### Frontend (apps/web)
+
+- **Forms**: Use `react-hook-form` combined with `zod` and `@hookform/resolvers/zod` for ALL forms. Custom `useState` for form fields is forbidden.
+- **Data Fetching**: Use `@tanstack/react-query` for all data fetching (`useQuery`) and mutations (`useMutation`).
+- **API Client**: Use the shared Axios instance in `@/lib/api.ts` for all manual API calls. Always set `withCredentials: true` for cookie-based auth.
+- **Notifications**: Use `sonner` (`toast`) for all user feedback/notifications.
+- **Icons**: Use `lucide-react`.
+- **Styling**: Use Tailwind CSS and Shadcn UI components.
+- **State Management**: Use `zustand` for global client-side state when React Context or Query is insufficient.
+
+### Backend (apps/api)
+
+- **DTOs**: Use `class-validator` decorators for input validation and `class-transformer` for payload transformation.
+- **Database**: Always use the `PrismaService` from the `database` module.
+- **Auth**: Use the existing `JwtAuthGuard` and `RoleGuard` for protected routes.
+
+### Critical Mandate for Agents
+
+Before implementing ANY feature or fix, you MUST:
+1. Grep the codebase for similar existing functionality (e.g., if adding a form, look for `useForm` usage).
+2. Check `package.json` in the relevant app to identify preferred libraries.
+3. Align your implementation 100% with discovered patterns. "Just-in-case" or "simpler" alternatives that deviate from these standards are considered errors.
+
 ## Building and Running
 
 ### Prerequisites
